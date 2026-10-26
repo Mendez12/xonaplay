@@ -6,42 +6,83 @@
 <title>XonaPlay Player</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
-html,body{margin:0;padding:0;background:#000;width:100%;height:100%;overflow:hidden}
+html,body{margin:0;padding:0;background:#000;width:100%;height:100%;overflow:hidden;font-family:Arial}
+#topBar{position:absolute;top:10px;left:10px;z-index:999;display:flex;gap:6px}
+.btn{background:#111c;border:1px solid #333;color:#0f0;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px}
+.btn.active{background:#00ff88;color:#000;font-weight:bold}
 #player,#video{width:100%;height:100vh;background:#000}
 #video{display:none}
 iframe{border:0;width:100%;height:100vh}
 </style>
 </head>
 <body>
-<iframe id="player" allowfullscreen allow="autoplay; fullscreen"></iframe>
+<div id="topBar"></div>
+<iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media"></iframe>
 <video id="video" controls autoplay playsinline></video>
 <script>
-function getParam(name){
-  const m = window.location.href.match(new RegExp('[?&]'+name+'=([^&]+)'));
-  return m ? decodeURIComponent(m[1]) : null;
+function getParam(n){
+  let url = window.location.href;
+  let m = url.match(new RegExp('[?&]'+n+'=([^&]+)'));
+  if(!m) return null;
+  let v = decodeURIComponent(m[1]);
+  try{ if(v.length>60 && !v.includes('http') && !v.includes('%')) v=atob(v); }catch(e){}
+  try{ v=decodeURIComponent(v); }catch(e){}
+  return v;
 }
-let s1 = getParam('s1');
-if(s1){
-  try{ if(s1.length>80 && !s1.includes('http')) s1=atob(s1); }catch(e){}
-  console.log("XonaPlay cargando:", s1);
-  const isMp4 = s1.toLowerCase().includes('.mp4');
-  const isM3u8 = s1.toLowerCase().includes('.m3u8');
-  
-  if(isMp4 || isM3u8){
-    document.getElementById('player').style.display='none';
-    const video = document.getElementById('video');
+let servers = [];
+['s1','s2','s3'].forEach((k,i)=>{
+  let v = getParam(k);
+  if(v) servers.push(v);
+});
+let s1 = getParam('s1'); // fallback for old links
+
+let current = 0;
+const topBar = document.getElementById('topBar');
+const iframe = document.getElementById('player');
+const video = document.getElementById('video');
+
+function isMedia(u){
+  let l = u.toLowerCase();
+  return l.includes('.mp4') || l.includes('.m3u8') || l.includes('.mkv') || l.includes('.webm');
+}
+function play(url){
+  if(!url) return;
+  if(isMedia(url)){
+    iframe.style.display='none';
     video.style.display='block';
-    if(isM3u8 && Hls.isSupported()){
-      const hls = new Hls();
-      hls.loadSource(s1);
+    if(url.toLowerCase().includes('.m3u8') && Hls.isSupported()){
+      let hls = new Hls();
+      hls.loadSource(url);
       hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play());
     }else{
-      video.src = s1;
+      video.src = url;
+      video.play().catch(()=>{});
     }
   }else{
-    document.getElementById('video').style.display='none';
-    document.getElementById('player').src = s1;
+    video.pause();
+    video.style.display='none';
+    iframe.style.display='block';
+    iframe.src = url;
   }
+}
+if(servers.length>0){
+  servers.forEach((url,i)=>{
+    let b = document.createElement('button');
+    b.className = 'btn'+(i==0?' active':'');
+    b.innerText = 'Servidores '+(i+1);
+    b.onclick = ()=>{
+      document.querySelectorAll('.btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      current=i;
+      play(url);
+    };
+    topBar.appendChild(b);
+  });
+  play(servers[0]);
+}else if(s1){
+  // compatibilidad con links de 1 servidor
+  play(s1);
 }
 </script>
 </body>
