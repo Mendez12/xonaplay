@@ -120,8 +120,8 @@ body{margin:0;background:#05050c;color:#fff;display:flex;height:100vh;overflow:h
 <div class="card" style="margin-top:14px"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>Películas Guardadas (<span id="countP">0</span>)</b></div><div style="display:flex;gap:8px"><input id="searchPeli" class="input search" placeholder="Buscar..." oninput="filterPelis(this.value)"><button class="btn-sec" onclick="exportPelis()">Exportar</button><button class="btn-sec" style="color:#f87171" onclick="borrarTodo()">Borrar todo</button></div></div><table class="table" id="tablaP"><tr><th>Poster</th><th>Título</th><th>Año</th><th>Embed</th><th>Acción</th></tr></table></div>
 </div>
 <div id="series" class="section">
-<h2>Gestión de Series <span style="background:#10b981;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px">CON MARCA EDITABLE</span></h2>
-<p style="color:#7a7aa0;font-size:13px;margin:6px 0 14px">Cada episodio ahora incluye tu marca arriba y abajo automáticamente</p>
+<h2>Gestión de Series <span style="background:#10b981;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px">CON MARCA EDITABLE - AUTO-DETECT</span></h2>
+<p style="color:#7a7aa0;font-size:13px;margin:6px 0 14px">Cada episodio ahora incluye tu marca + Base64 de episodios para el player V9</p>
 <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:14px">
 <div class="card">
 <b>Agregar Serie</b>
@@ -143,10 +143,10 @@ body{margin:0;background:#05050c;color:#fff;display:flex;height:100vh;overflow:h
 </div>
 <span class="label" style="margin-top:8px">Link S1 (M3U8/MP4) *</span><input class="input" id="ep_s1" placeholder="https://...">
 <span class="label" style="margin-top:8px">Link S2 (opcional)</span><input class="input" id="ep_s2" placeholder="Backup">
-<button class="btn-main" style="margin-top:10px" onclick="addEpisodio()">➕ Agregar Episodio con Marca</button>
+<button class="btn-main" style="margin-top:10px" onclick="addEpisodio()">➕ Agregar Episodio con Marca + Base64</button>
 <div id="epList" style="margin-top:12px;max-height:380px;overflow:auto"></div>
 <div style="margin-top:12px;background:#10102a;border:1px dashed #2a2a6a;padding:12px;border-radius:12px">
-<span class="label">✅ Embed generado - Con tu marca</span>
+<span class="label">✅ Embed generado - Con tu marca + Auto-Detect</span>
 <div id="serieEmbedBox" class="iframe-box"></div>
 <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
 <button class="btn-sec" onclick="copiarSerieEmbed()">COPIAR EMBED</button>
@@ -207,6 +207,13 @@ function renderAll(){
  else{[...peliculas].reverse().forEach((p,idx)=>{let real=peliculas.length-1-idx;tabla.innerHTML+='<tr><td><img src="'+(p.poster||'')+'" style="width:36px;height:52px;object-fit:cover;border-radius:6px;background:#1a1a33"></td><td><b>'+esc(p.titulo)+'</b><br><span style="font-size:10px;color:#6b7280">'+esc(p.year)+'</span></td><td>'+esc(p.year)+'</td><td><button class="btn-sec" onclick="copiarDirecto(\''+btoa(p.iframe)+'\')">Copiar</button></td><td><button class="btn-sec" onclick="editarPeli('+real+')">Editar</button> <button class="btn-sec" style="color:#f87171" onclick="borrarPeli('+real+')">X</button></td></tr>';});}
 }
 function esc(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toBase64Unicode(str){return btoa(unescape(encodeURIComponent(str)))}
+function getEpsBase64ForTemp(tnum){
+ if(selectedSerieIdx<0)return '';
+ let s=series[selectedSerieIdx];
+ let eps=(s.temporadas[tnum]||[]).map(ep=>({n:ep.num,t:ep.titulo,url:ep.s1,d:'24 min'}));
+ try{return toBase64Unicode(JSON.stringify(eps));}catch(e){return btoa(JSON.stringify(eps));}
+}
 function show(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
 function updatePoster(url){let prev=document.getElementById('posterPrev');if(!url){prev.textContent='Sin imagen';return;}prev.innerHTML='<img src="'+url+'" onerror="this.parentElement.textContent=\'Error\'">';}
 function clearForm(){['p_titulo','p_s1','p_s2','p_poster','p_desc'].forEach(i=>{let el=document.getElementById(i);if(el)el.value='';});updatePoster('');document.getElementById('p_codeBox').style.display='none';currentIframe='';}
@@ -224,7 +231,7 @@ function genPeli(){
  if(!t){toast('Falta título');return;}
  if(!s1){toast('Falta link');return;}
  let marca=getMarca();
- let params='?titulo='+encodeURIComponent(t)+'&poster='+encodeURIComponent(poster)+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&year='+encodeURIComponent(year)+'&marca='+encodeURIComponent(marca);
+ let params='?titulo='+encodeURIComponent(t)+'&poster='+encodeURIComponent(poster)+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&year='+encodeURIComponent(year)+'&marca='+encodeURIComponent(marca)+'&tipo=pelicula';
  let directLink=github+params;
  currentDirectLink=directLink;
  currentIframe='<iframe src="'+directLink+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
@@ -236,7 +243,7 @@ function genPeli(){
  try{if(s1.includes('.m3u8')){if(Hls.isSupported()){if(hlsInstance)hlsInstance.destroy();hlsInstance=new Hls();hlsInstance.loadSource(s1);hlsInstance.attachMedia(video);hlsInstance.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));}else if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=s1;}}else{video.src=s1;video.play().catch(()=>{});}video.onerror=()=>{if(s2){video.src=s2;}};}catch(e){video.src=s1;}
  let nueva={titulo:t,s1:s1,s2:s2,poster:poster,year:year,calidad:calidad,idioma:idioma,servidor:servidor,desc:desc,iframe:currentIframe,direct:directLink,fecha:new Date().toISOString()};
  peliculas.push(nueva);saveData();
- toast('✓ Embed copiado con marca: '+marca+' (arriba y abajo)');
+ toast('✓ Película MODO PELÍCULA - Auto-detect');
  navigator.clipboard.writeText(currentIframe).catch(()=>{});
 }
 function copiarEmbed(){if(!currentIframe){toast('Primero genera');return;}navigator.clipboard.writeText(currentIframe);toast('✓ Embed copiado');}
@@ -274,13 +281,14 @@ function addEpisodio(){
  saveSeries();renderEpisodios();
  let github=document.getElementById('p_github').value;
  let marca=getMarca();
- let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+eptit)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&marca='+encodeURIComponent(marca);
+ let epsB64=getEpsBase64ForTemp(tnum);
+ let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+eptit)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);
  lastSerieDirect=github+params;
  lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
  document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;
  document.getElementById('ep_num').value=epnum+1;
  document.getElementById('ep_s1').value='';
- toast('Episodio guardado con marca: '+marca+' ✓');
+ toast('Episodio guardado con Base64 + Auto-Detect ✓');
 }
 function renderEpisodios(){
   if(selectedSerieIdx<0)return;
@@ -300,21 +308,23 @@ function playSerieEp(tnum,epnum){
   let s=series[selectedSerieIdx];let ep=(s.temporadas[tnum]||[]).find(e=>e.num===epnum);if(!ep)return;
   let github=document.getElementById('p_github').value;
   let marca=getMarca();
-  let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca);
+  let epsB64=getEpsBase64ForTemp(tnum);
+  let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);
   lastSerieDirect=github+params;
   lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
   document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;
-  toast('Embed con marca: '+marca);
+  toast('Embed SERIE con Base64 - Auto-Detect');
 }
 function copiarIframeDirecto(tnum,epnum){
   let s=series[selectedSerieIdx];let ep=(s.temporadas[tnum]||[]).find(e=>e.num===epnum);if(!ep){toast('No encontrado');return;}
   let github=document.getElementById('p_github').value;
   let marca=getMarca();
-  let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca);
+  let epsB64=getEpsBase64ForTemp(tnum);
+  let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);
   lastSerieDirect=github+params;
   lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
   document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;
-  navigator.clipboard.writeText(lastSerieEmbed).then(()=>toast('✓ Iframe copiado con marca')).catch(()=>{});
+  navigator.clipboard.writeText(lastSerieEmbed).then(()=>toast('✓ Iframe SERIE copiado con Base64')).catch(()=>{});
 }
 function copiarSerieEmbed(){let code=lastSerieEmbed||document.getElementById('serieEmbedBox').textContent;if(!code||!code.trim()){toast('Dale a Embed primero');return;}navigator.clipboard.writeText(code);toast('✓ Embed copiado');}
 function copiarSoloLinkSerie(){if(!lastSerieDirect){toast('Dale a Embed primero');return;}navigator.clipboard.writeText(lastSerieDirect);toast('✓ Solo link copiado');}
