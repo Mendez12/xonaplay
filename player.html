@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>XonaPlay V9 Auto Detect</title>
+<title>XonaPlay V9.1 Calidad Real</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -47,8 +47,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 .cBtn svg{width:22px;height:22px;fill:#fff}
 #time{color:#e8e8e8;font-size:12px;font-weight:600;min-width:108px}
 #marcaPill{color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 12px;border-radius:20px}
-#skipBtn{position:absolute;bottom:78px;right:20px;z-index:96;background:#f5c518;color:#000;border:0;padding:8px 16px;border-radius:6px;font-weight:800;font-size:12px;cursor:pointer;display:none;box-shadow:0 4px 12px rgba(0,0,0,.5)}
-#skipBtn.show{display:flex}
 #epiBtn{display:none}
 #epiBtn.show{display:flex}
 #epiDrawer{position:absolute;top:0;right:0;bottom:0;width:340px;z-index:110;background:#0f0f17;border-left:1px solid #23233a;transform:translateX(100%);transition:.35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
@@ -69,7 +67,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #nextOverlay p{color:#aaa;font-size:13px}
 #nextBar{width:220px;height:4px;background:rgba(255,255,255,.2);border-radius:10px;margin-top:16px;overflow:hidden}
 #nextFill{height:100%;width:0%;background:#7c3aed;transition:width 1s linear}
-#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:190px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none}
+#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:190px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;max-height:320px;overflow:auto}
 #serverMenu.show{display:block}
 .srvOpt,.qOpt{width:100%;text-align:left;background:transparent;border:0;color:#a5a5c5;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between}
 .srvOpt:hover,.qOpt:hover{background:#1f1f35;color:#fff}
@@ -89,7 +87,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
  <div id="pauseOverlay" onclick="toggle()"><div id="pauseIcon"><svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></div></div>
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
  <video id="video"></video>
- <button id="skipBtn" onclick="skipIntro()">SALTAR INTRO ▸</button>
  <div id="previewTip"><div id="previewBox"></div><b id="previewTime">00:00</b></div>
  <div id="epiDrawer"><div id="epiHead"><b id="epiHeadTitle">Episodios</b><button class="cBtn" onclick="document.getElementById('epiDrawer').classList.remove('show')">✕</button></div><div id="epiList"></div></div>
  <div id="nextOverlay"><b>Siguiente episodio en <span id="count">5</span>s</b><p id="nextName">Cargando...</p><div id="nextBar"><div id="nextFill"></div></div><div style="display:flex;gap:10px;margin-top:16px"><button onclick="playNextNow()" style="background:#7c3aed;border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:800">REPRODUCIR YA</button><button onclick="cancelNext()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer">CANCELAR</button></div></div>
@@ -115,6 +112,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 </div>
 <script>
 function g(n){let m=location.href.match(new RegExp('[?&]'+n+'=([^&]+)'));if(!m)return null;let v=decodeURIComponent(m[1]);try{if(v.length>60&&!v.includes('http'))v=atob(v)}catch(e){}try{v=decodeURIComponent(v)}catch(e){}return v}
+function fromBase64Unicode(b64){try{return decodeURIComponent(escape(atob(b64)))}catch(e){return atob(b64)}}
 let servers=[];['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'].forEach(k=>{let v=g(k);if(v)servers.push(v)})
 let titulo=g('titulo')||'',poster=g('poster'),year=g('year')||'2015',marca=(g('marca')||'XONAPLAY').toUpperCase(),t=g('t'),e=g('e'),tipo=g('tipo'),epsRaw=g('eps')
 let decTitle=decodeURIComponent(titulo||'')
@@ -135,10 +133,10 @@ if(isSeries)document.getElementById('epiBtn').classList.add('show')
 if(t&&e)document.getElementById('subTxt').innerText=`T${t} • E${e} • ${year}`
 else document.getElementById('subTxt').innerText=year+' • HD'
 if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http')){document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`;document.getElementById('previewBox').style.backgroundImage=`url('${p}')`}}catch(e){}}
-const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),serverMenu=document.getElementById('serverMenu'),skipBtn=document.getElementById('skipBtn'),progWrap=document.getElementById('progWrap'),previewTip=document.getElementById('previewTip'),previewTime=document.getElementById('previewTime'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay')
-let hls=null,cur=0,started=false,hideT=null,ccOn=false,countInt=null
+const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),serverMenu=document.getElementById('serverMenu'),progWrap=document.getElementById('progWrap'),previewTip=document.getElementById('previewTip'),previewTime=document.getElementById('previewTime'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay')
+let hls=null,cur=0,started=false,hideT=null,ccOn=false,countInt=null,currentQuality=-1
 let episodes=[]
-try{if(epsRaw){let j=atob(epsRaw);episodes=JSON.parse(j)}}catch(e){episodes=[]}
+try{if(epsRaw){let jsonStr=fromBase64Unicode(epsRaw);episodes=JSON.parse(jsonStr)}}catch(e){try{episodes=JSON.parse(atob(epsRaw))}catch(e2){episodes=[]}}
 if(isSeries && episodes.length===0 && servers.length>1){
  episodes=servers.map((u,i)=>({n:i+1,t:`Episodio ${i+1}`,url:u,d:'24 min'}))
 }
@@ -149,28 +147,68 @@ function isMedia(u){return u.toLowerCase().includes('.m3u8')||u.toLowerCase().in
 function showLoad(b){loader.style.display=b?'block':'none'}
 function play(url){
  showLoad(true);if(hls){try{hls.destroy()}catch(e){}}
+ hls=null;currentQuality=-1
  center.classList.add('hide');document.getElementById('bgPoster').style.opacity='0';document.getElementById('bgGradient').style.opacity='0'
  bottom.classList.remove('hide')
  if(isMedia(url)){
   iframe.style.display='none';video.style.display='block'
-  if(url.toLowerCase().includes('.m3u8')&&Hls.isSupported()){hls=new Hls();hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);video.play()})}
+  if(url.toLowerCase().includes('.m3u8')&&Hls.isSupported()){
+   hls=new Hls({autoStartLoad:true, capLevelToPlayerSize:false});
+   hls.loadSource(url);hls.attachMedia(video);
+   hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);video.play();});
+   hls.on(Hls.Events.LEVEL_SWITCHED,(event,data)=>{currentQuality=data.level;})
+  }
   else{video.src=url;video.oncanplay=()=>showLoad(false);video.play()}
  }else{video.pause();video.style.display='none';iframe.style.display='block';iframe.src=url;setTimeout(()=>showLoad(false),1000)}
 }
 function start(){if(!servers.length && !episodes.length)return;started=true;let u=episodes.length?episodes[cur].url:servers[cur];play(u);ui();if(isSeries)buildEpiList()}
 function toggle(){if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}}
 function toggleFS(){if(!document.fullscreenElement)wrap.requestFullscreen();else document.exitFullscreen()}
-function skipIntro(){if(video.duration)video.currentTime+=85;skipBtn.classList.remove('show')}
 function toggleCC(){ccOn=!ccOn;document.getElementById('ccBtn').style.opacity=ccOn?'1':'.4';if(video.textTracks&&video.textTracks[0])video.textTracks[0].mode=ccOn?'showing':'hidden'}
 function toggleEpi(){epiDrawer.classList.toggle('show')}
+function setQuality(levelHeight){
+ if(!hls){toastQuality('Calidad solo disponible en HLS');return;}
+ if(levelHeight==='auto'){hls.currentLevel=-1;currentQuality=-1;serverMenu.classList.remove('show');return;}
+ let levels=hls.levels;
+ let best=-1;let bestH=0;
+ for(let i=0;i<levels.length;i++){
+  let h=levels[i].height||0;
+  if(h<=levelHeight && h>bestH){bestH=h;best=i;}
+ }
+ if(best==-1){
+  let closest=0;let minDiff=9999;
+  for(let i=0;i<levels.length;i++){let diff=Math.abs((levels[i].height||0)-levelHeight);if(diff<minDiff){minDiff=diff;closest=i;}}
+  best=closest;
+ }
+ hls.currentLevel=best;currentQuality=best;
+ serverMenu.classList.remove('show');
+}
+function toastQuality(msg){/* mini toast en menu */}
 function toggleMenu(){
  if(serverMenu.classList.contains('show')){serverMenu.classList.remove('show');return}
- let html='<div class="menuTitle">CALIDAD</div><button class="qOpt active">Auto ●</button><button class="qOpt">1080p</button><button class="qOpt">720p</button><button class="qOpt">480p</button>'
- if(isSeries)html+='<div class="menuTitle" style="margin-top:8px">VELOCIDAD</div><button class="qOpt">1x</button><button class="qOpt">1.25x</button><button class="qOpt">1.5x</button>'
- else html+='<div class="menuTitle" style="margin-top:8px">SERVIDORES</div>'+servers.map((u,i)=>`<button class="srvOpt ${i==cur?'active':''}" onclick="selServ(${i})"><span>SERVIDOR 0${i+1}</span><span>${i==cur?'●':''}</span></button>`).join('')
+ let html=''
+ if(hls && hls.levels && hls.levels.length>0){
+  let levels=[...hls.levels].sort((a,b)=>b.height-a.height);
+  let uniqueHeights=[...new Set(levels.map(l=>l.height))].sort((a,b)=>b-a);
+  html+='<div class="menuTitle">CALIDAD REAL - HLS</div>'
+  let autoActive=currentQuality==-1?'active':''
+  html+=`<button class="qOpt ${autoActive}" onclick="setQuality('auto')"><span>Auto</span><span>${autoActive?'●':''}</span></button>`
+  uniqueHeights.forEach(h=>{
+   let isActive=false;
+   if(hls && currentQuality!=-1){let ch=hls.levels[currentQuality]?.height;isActive=ch==h}
+   html+=`<button class="qOpt ${isActive?'active':''}" onclick="setQuality(${h})"><span>${h}p</span><span>${isActive?'●':''}</span></button>`
+  })
+ }else{
+  html+='<div class="menuTitle">CALIDAD</div>'
+  html+='<button class="qOpt active"><span>Auto ●</span><span>MP4 no tiene calidades</span></button>'
+  html+='<div style="padding:8px 12px;font-size:10px;color:#666;line-height:1.4">Sube el video en .m3u8 con varias calidades para activar 1080p/720p/480p reales</div>'
+ }
+ if(!isSeries){
+  html+='<div class="menuTitle" style="margin-top:8px">SERVIDORES</div>'+servers.map((u,i)=>`<button class="srvOpt ${i==cur?'active':''}" onclick="selServ(${i})"><span>SERVIDOR 0${i+1}</span><span>${i==cur?'●':''}</span></button>`).join('')
+ }
  serverMenu.innerHTML=html;serverMenu.classList.add('show')
 }
-function selServ(i){cur=i;serverMenu.classList.remove('show');if(started)play(servers[i])}
+function selServ(i){cur=i;serverMenu.classList.remove('show');if(started){let u=episodes.length?episodes[i]?.url:servers[i];if(u)play(u)}}
 function seek(ev){if(!video.duration)return;let r=ev.currentTarget.getBoundingClientRect();let p=(ev.clientX-r.left)/r.width;video.currentTime=p*video.duration}
 progWrap.addEventListener('click',seek)
 progWrap.addEventListener('mousemove',(e)=>{
@@ -184,7 +222,6 @@ video.addEventListener('timeupdate',()=>{
  let pc=(video.currentTime/video.duration)*100;progFill.style.width=pc+'%'
  let cm=Math.floor(video.currentTime/60).toString().padStart(2,'0'),cs=Math.floor(video.currentTime%60).toString().padStart(2,'0'),dm=Math.floor(video.duration/60).toString().padStart(2,'0'),ds=Math.floor(video.duration%60).toString().padStart(2,'0')
  timeEl.innerText=`${cm}:${cs} / ${dm}:${ds}`
- if(video.currentTime>8&&video.currentTime<90)skipBtn.classList.add('show');else skipBtn.classList.remove('show')
 })
 video.addEventListener('play',()=>{ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';pauseOverlay.classList.remove('show');ui()})
 video.addEventListener('pause',()=>{ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>';pauseOverlay.classList.add('show');ui()})
