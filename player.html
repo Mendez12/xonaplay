@@ -1,29 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>XonaPlay Player</title>
-<style>html,body{margin:0;padding:0;background:#000;width:100%;height:100%;overflow:hidden}#player{width:100%;height:100vh;border:0}</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+html,body{margin:0;padding:0;background:#000;width:100%;height:100%;overflow:hidden}
+#player,#video{width:100%;height:100vh;background:#000}
+#video{display:none}
+iframe{border:0;width:100%;height:100vh}
+</style>
 </head>
 <body>
 <iframe id="player" allowfullscreen allow="autoplay; fullscreen"></iframe>
+<video id="video" controls autoplay playsinline></video>
 <script>
 function getParam(name){
-  const url = window.location.href;
-  const regex = new RegExp('[?&]'+name+'=([^&]+)');
-  const m = url.match(regex);
+  const m = window.location.href.match(new RegExp('[?&]'+name+'=([^&]+)'));
   return m ? decodeURIComponent(m[1]) : null;
 }
 let s1 = getParam('s1');
 if(s1){
-  // Decodifica si viene en base64 o normal
-  try{ if(s1.length>100 && !s1.includes('http')) s1=atob(s1); }catch(e){}
-  s1 = s1.replace(/^\s+/, '');
-  console.log("Cargando:", s1);
-  document.getElementById('player').src = s1;
-} else {
-  document.body.innerHTML = '<div style="color:white;text-align:center;padding-top:50px">Falta parametro s1</div>';
+  try{ if(s1.length>80 && !s1.includes('http')) s1=atob(s1); }catch(e){}
+  console.log("XonaPlay cargando:", s1);
+  const isMp4 = s1.toLowerCase().includes('.mp4');
+  const isM3u8 = s1.toLowerCase().includes('.m3u8');
+  
+  if(isMp4 || isM3u8){
+    document.getElementById('player').style.display='none';
+    const video = document.getElementById('video');
+    video.style.display='block';
+    if(isM3u8 && Hls.isSupported()){
+      const hls = new Hls();
+      hls.loadSource(s1);
+      hls.attachMedia(video);
+    }else{
+      video.src = s1;
+    }
+  }else{
+    document.getElementById('video').style.display='none';
+    document.getElementById('player').src = s1;
+  }
 }
 </script>
 </body>
