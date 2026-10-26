@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>XonaPlay Netflix V7 Pro</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XonaPlay V9 Auto Detect</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -13,47 +12,69 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #wrap.show{cursor:default}
 #bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(32px) brightness(.32);transform:scale(1.12);transition:.8s}
 #bgGradient{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,#000 18%,rgba(0,0,0,.65) 38%,transparent 68%,rgba(0,0,0,.7) 100%)}
-#topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(180deg,rgba(0,0,0,.9) 0%,transparent 100%);transition:.4s}
+#topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(180deg,rgba(0,0,0,.9),transparent);transition:.4s}
 #topBar.hide{transform:translateY(-110%);opacity:0}
-.logo{font-weight:800;font-size:17px;color:#fff;text-transform:uppercase;display:flex;gap:7px;letter-spacing:.5px}
+.logo{font-weight:800;font-size:17px;color:#fff;text-transform:uppercase;display:flex;gap:7px}
 .logo span{color:#7c3aed}
-#titleTxt{color:#fff;font-size:13px;font-weight:700;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#subTxt{color:#aaa;font-size:10px;font-weight:600;margin-top:2px}
-#center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;text-align:center;transition:.35s cubic-bezier(.2,.8,.2,1)}
+#titleTxt{color:#fff;font-size:13px;font-weight:700;max-width:340px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#subTxt{color:#aaa;font-size:10px;font-weight:600}
+#center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;text-align:center;transition:.35s}
 #center.hide{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.88)}
-#bigPlay{width:90px;height:90px;background:#7c3aed;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 40px rgba(124,58,237,.75),0 8px 24px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
-#bigPlay:hover{transform:scale(1.08)}
-#bigPlay svg{margin-left:3px}
-#centerTitle{color:#fff;font-size:23px;font-weight:800;line-height:1.2;text-shadow:0 4px 24px rgba(0,0,0,.9);max-width:540px}
-#centerSub{color:rgba(255,255,255,.65);font-size:11px;margin-top:8px;font-weight:700;letter-spacing:.4px}
-#pauseOverlay{position:absolute;inset:0;z-index:55;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.25);backdrop-filter:blur(2px)}
+#bigPlay{width:90px;height:90px;background:#7c3aed;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 40px rgba(124,58,237,.75);cursor:pointer}
+#centerTitle{color:#fff;font-size:23px;font-weight:800;max-width:540px;text-shadow:0 4px 24px rgba(0,0,0,.9)}
+#centerSub{color:rgba(255,255,255,.65);font-size:11px;margin-top:8px;font-weight:700}
+#modeBadge{position:absolute;top:64px;left:20px;z-index:90;background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.4);color:#a78bfa;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:1px}
+#pauseOverlay{position:absolute;inset:0;z-index:55;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.25)}
 #pauseOverlay.show{display:flex}
-#pauseIcon{width:110px;height:110px;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);animation:pop .3s cubic-bezier(.2,.8,.2,1)}
-@keyframes pop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+#pauseIcon{width:110px;height:110px;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
 #player,#video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:10}
 #video{display:none}
-#bottom{position:absolute;bottom:0;left:0;right:0;z-index:95;padding:0 20px 14px 20px;background:linear-gradient(0deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.75) 55%,transparent 100%);transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .4s}
+#bottom{position:absolute;bottom:0;left:0;right:0;z-index:95;padding:0 20px 14px 20px;background:linear-gradient(0deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.75) 55%,transparent 100%);transition:.4s}
 #bottom.hide{transform:translateY(110%);opacity:0}
 #progWrap{width:100%;height:20px;display:flex;align-items:center;cursor:pointer;position:relative}
-#progBg{width:100%;height:4px;background:rgba(255,255,255,.3);border-radius:99px;transition:height .22s cubic-bezier(.2,.8,.2,1),background .22s}
+#progBg{width:100%;height:4px;background:rgba(255,255,255,.3);border-radius:99px;transition:.22s}
 #progWrap:hover #progBg{height:8px;background:rgba(255,255,255,.38)}
-#progFill{height:100%;width:0%;background:#7c3aed;border-radius:99px;position:relative;transition:width .08s linear}
-#progFill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%) scale(0);width:14px;height:14px;background:#7c3aed;border-radius:50%;box-shadow:0 0 12px rgba(124,58,237,.9),0 2px 6px rgba(0,0,0,.4);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s;opacity:0}
+#progFill{height:100%;width:0%;background:#7c3aed;border-radius:99px;position:relative}
+#progFill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%) scale(0);width:14px;height:14px;background:#7c3aed;border-radius:50%;box-shadow:0 0 12px rgba(124,58,237,.9);transition:.22s;opacity:0}
 #progWrap:hover #progFill::after{transform:translateY(-50%) scale(1);opacity:1}
+#previewTip{position:absolute;bottom:36px;transform:translateX(-50%);background:#14141f;border:1px solid #2a2a4a;padding:6px 8px;border-radius:10px;display:none;pointer-events:none;z-index:99;box-shadow:0 8px 20px rgba(0,0,0,.6)}
+#previewBox{width:140px;height:78px;background:#000;border-radius:6px;background-size:cover;background-position:center;margin-bottom:4px}
+#previewTip b{color:#fff;font-size:11px;display:block;text-align:center}
 #ctrlRow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.cLeft,.cRight{display:flex;align-items:center;gap:14px}
+.cLeft,.cRight{display:flex;align-items:center;gap:12px}
 .cBtn{background:transparent;border:0;color:#fff;cursor:pointer;opacity:.92;transition:.2s;width:30px;height:30px;display:flex;align-items:center;justify-content:center}
 .cBtn:hover{opacity:1;transform:scale(1.12)}
-.cBtn svg{width:24px;height:24px;fill:#fff}
-#time{color:#e8e8e8;font-size:12px;font-weight:600;letter-spacing:.2px;min-width:108px}
-#bottomTitle{color:#fff;font-size:12px;font-weight:600;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85}
-#marcaPill{color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 12px;border-radius:20px;backdrop-filter:blur(6px)}
-#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:160px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none}
-#serverMenu.show{display:block;animation:menuIn .22s cubic-bezier(.2,.8,.2,1)}
-@keyframes menuIn{0%{transform:translateY(10px) scale(.96);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
-.srvOpt{width:100%;text-align:left;background:transparent;border:0;color:#a5a5c5;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.srvOpt:hover{background:#1f1f35;color:#fff}
-.srvOpt.active{background:#7c3aed;color:#fff}
+.cBtn svg{width:22px;height:22px;fill:#fff}
+#time{color:#e8e8e8;font-size:12px;font-weight:600;min-width:108px}
+#marcaPill{color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 12px;border-radius:20px}
+#skipBtn{position:absolute;bottom:78px;right:20px;z-index:96;background:#f5c518;color:#000;border:0;padding:8px 16px;border-radius:6px;font-weight:800;font-size:12px;cursor:pointer;display:none;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+#skipBtn.show{display:flex}
+#epiBtn{display:none}
+#epiBtn.show{display:flex}
+#epiDrawer{position:absolute;top:0;right:0;bottom:0;width:340px;z-index:110;background:#0f0f17;border-left:1px solid #23233a;transform:translateX(100%);transition:.35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+#epiDrawer.show{transform:translateX(0)}
+#epiHead{padding:16px 18px;border-bottom:1px solid #23233a;display:flex;justify-content:space-between;align-items:center}
+#epiHead b{color:#fff;font-size:13px}
+#epiList{overflow-y:auto;flex:1;padding:8px}
+.epiItem{padding:10px 12px;border-radius:10px;display:flex;gap:10px;cursor:pointer;transition:.2s;margin-bottom:4px}
+.epiItem:hover{background:#1a1a2a}
+.epiItem.active{background:#7c3aed}
+.epiNum{width:28px;height:28px;background:#22223a;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:11px;font-weight:800;flex-shrink:0}
+.epiItem.active .epiNum{background:rgba(255,255,255,.2);color:#fff}
+.epiInfo b{color:#fff;font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.epiInfo small{color:#888;font-size:10px}
+#nextOverlay{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;flex-direction:column}
+#nextOverlay.show{display:flex}
+#nextOverlay b{color:#fff;font-size:22px;margin-bottom:6px}
+#nextOverlay p{color:#aaa;font-size:13px}
+#nextBar{width:220px;height:4px;background:rgba(255,255,255,.2);border-radius:10px;margin-top:16px;overflow:hidden}
+#nextFill{height:100%;width:0%;background:#7c3aed;transition:width 1s linear}
+#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:190px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none}
+#serverMenu.show{display:block}
+.srvOpt,.qOpt{width:100%;text-align:left;background:transparent;border:0;color:#a5a5c5;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between}
+.srvOpt:hover,.qOpt:hover{background:#1f1f35;color:#fff}
+.srvOpt.active,.qOpt.active{background:#7c3aed;color:#fff}
+.menuTitle{color:#666;font-size:9px;font-weight:800;letter-spacing:1px;padding:8px 12px 4px 12px}
 #loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;display:none}
 .spinner{width:46px;height:46px;border:3px solid rgba(255,255,255,.12);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -62,27 +83,30 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 <body>
 <div id="wrap" class="show">
  <div id="bgPoster"></div><div id="bgGradient"></div>
- <div id="topBar">
-  <div style="display:flex;gap:14px;align-items:center"><div class="logo">▶ <span id="logoSpan">XONAPLAY</span></div><div><b id="titleTxt"></b><div id="subTxt"></div></div></div>
-  <div style="width:32px"></div>
- </div>
+ <div id="topBar"><div style="display:flex;gap:14px;align-items:center"><div class="logo">▶ <span id="logoSpan">XONAPLAY</span></div><div><b id="titleTxt"></b><div id="subTxt"></div></div></div></div>
+ <div id="modeBadge"></div>
  <div id="center"><div id="bigPlay" onclick="start()"><svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5.14v14l11-7-11-7z"/></svg></div><div id="centerTitle"></div><div id="centerSub"></div></div>
- <div id="pauseOverlay" onclick="toggle()"><div id="pauseIcon"><svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M8 5.14v14l11-7-11-7z"/></svg></div></div>
+ <div id="pauseOverlay" onclick="toggle()"><div id="pauseIcon"><svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></div></div>
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
  <video id="video"></video>
+ <button id="skipBtn" onclick="skipIntro()">SALTAR INTRO ▸</button>
+ <div id="previewTip"><div id="previewBox"></div><b id="previewTime">00:00</b></div>
+ <div id="epiDrawer"><div id="epiHead"><b id="epiHeadTitle">Episodios</b><button class="cBtn" onclick="document.getElementById('epiDrawer').classList.remove('show')">✕</button></div><div id="epiList"></div></div>
+ <div id="nextOverlay"><b>Siguiente episodio en <span id="count">5</span>s</b><p id="nextName">Cargando...</p><div id="nextBar"><div id="nextFill"></div></div><div style="display:flex;gap:10px;margin-top:16px"><button onclick="playNextNow()" style="background:#7c3aed;border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:800">REPRODUCIR YA</button><button onclick="cancelNext()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer">CANCELAR</button></div></div>
  <div id="serverMenu"></div>
  <div id="bottom" class="hide">
-  <div id="progWrap" onclick="seek(event)"><div id="progBg"><div id="progFill"></div></div></div>
+  <div id="progWrap"><div id="progBg"><div id="progFill"></div></div></div>
   <div id="ctrlRow">
    <div class="cLeft">
     <button class="cBtn" id="ppBtn" onclick="toggle()"><svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg></button>
-    <button class="cBtn" onclick="video.muted=!video.muted"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
+    <button class="cBtn" onclick="video.muted=!video.muted"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg></button>
     <span id="time">00:00 / 00:00</span>
-    <span id="bottomTitle"></span>
+    <button class="cBtn" id="epiBtn" onclick="toggleEpi()"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></button>
    </div>
    <div class="cRight">
+    <button class="cBtn" id="ccBtn" onclick="toggleCC()" style="opacity:.4"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H8v1h4v2H6V8h6v2zm8 4h-6v-1h4v-1h-4v-1h4v-1h-6v5h6v-1z"/></svg></button>
     <span id="marcaPill"></span>
-    <button class="cBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.8"/><circle cx="19.5" cy="12" r="1.8"/><circle cx="4.5" cy="12" r="1.8"/></svg></button>
+    <button class="cBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><circle cx="4.5" cy="12" r="1.6"/></svg></button>
     <button class="cBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
    </div>
   </div>
@@ -91,19 +115,36 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 </div>
 <script>
 function g(n){let m=location.href.match(new RegExp('[?&]'+n+'=([^&]+)'));if(!m)return null;let v=decodeURIComponent(m[1]);try{if(v.length>60&&!v.includes('http'))v=atob(v)}catch(e){}try{v=decodeURIComponent(v)}catch(e){}return v}
-let servers=[];['s1','s2','s3','s4'].forEach(k=>{let v=g(k);if(v)servers.push(v)})
-let titulo=g('titulo')||'',poster=g('poster'),year=g('year')||'2015',marca=(g('marca')||'XONAPLAY').toUpperCase(),t=g('t'),e=g('e')
+let servers=[];['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'].forEach(k=>{let v=g(k);if(v)servers.push(v)})
+let titulo=g('titulo')||'',poster=g('poster'),year=g('year')||'2015',marca=(g('marca')||'XONAPLAY').toUpperCase(),t=g('t'),e=g('e'),tipo=g('tipo'),epsRaw=g('eps')
 let decTitle=decodeURIComponent(titulo||'')
+let isSeries = false
+if(tipo && tipo.toLowerCase().includes('serie')) isSeries=true
+if(epsRaw) isSeries=true
+if(t && e) isSeries=true
+if(g('temporada')||g('season')) isSeries=true
+if(servers.length>1 && (t||epsRaw)) isSeries=true
 document.getElementById('titleTxt').innerText=decTitle
 document.getElementById('centerTitle').innerText=decTitle
-document.getElementById('bottomTitle').innerText=decTitle
 document.getElementById('logoSpan').innerText=marca
 document.getElementById('marcaPill').innerText=marca
 document.getElementById('centerSub').innerText='Toca para reproducir • '+marca
-document.getElementById('subTxt').innerText=(t&&e)?`T${t} • E${e} • ${year}`:`${year} • HD`
-if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http'))document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`}catch(e){}}
-const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),pauseIcon=document.getElementById('pauseIcon'),serverMenu=document.getElementById('serverMenu')
-let hls=null,cur=0,started=false,hideT=null
+document.getElementById('modeBadge').innerText=isSeries?'MODO SERIE • AUTO-DETECT':'MODO PELÍCULA • AUTO-DETECT'
+document.getElementById('epiHeadTitle').innerText=isSeries?`Episodios - T${t||1}`:''
+if(isSeries)document.getElementById('epiBtn').classList.add('show')
+if(t&&e)document.getElementById('subTxt').innerText=`T${t} • E${e} • ${year}`
+else document.getElementById('subTxt').innerText=year+' • HD'
+if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http')){document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`;document.getElementById('previewBox').style.backgroundImage=`url('${p}')`}}catch(e){}}
+const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),serverMenu=document.getElementById('serverMenu'),skipBtn=document.getElementById('skipBtn'),progWrap=document.getElementById('progWrap'),previewTip=document.getElementById('previewTip'),previewTime=document.getElementById('previewTime'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay')
+let hls=null,cur=0,started=false,hideT=null,ccOn=false,countInt=null
+let episodes=[]
+try{if(epsRaw){let j=atob(epsRaw);episodes=JSON.parse(j)}}catch(e){episodes=[]}
+if(isSeries && episodes.length===0 && servers.length>1){
+ episodes=servers.map((u,i)=>({n:i+1,t:`Episodio ${i+1}`,url:u,d:'24 min'}))
+}
+if(isSeries && episodes.length===0 && t){
+ let curE=parseInt(e||1);for(let i=1;i<=10;i++){episodes.push({n:i,t:`Episodio ${i}`,url:servers[0]||'',d:'24 min'})} cur=curE-1
+}
 function isMedia(u){return u.toLowerCase().includes('.m3u8')||u.toLowerCase().includes('.mp4')||u.toLowerCase().includes('.webm')}
 function showLoad(b){loader.style.display=b?'block':'none'}
 function play(url){
@@ -116,57 +157,59 @@ function play(url){
   else{video.src=url;video.oncanplay=()=>showLoad(false);video.play()}
  }else{video.pause();video.style.display='none';iframe.style.display='block';iframe.src=url;setTimeout(()=>showLoad(false),1000)}
 }
-function start(){if(!servers.length)return;started=true;play(servers[cur]);ui()}
-function toggle(){if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}else{/* iframe no controlable */}}
-function toggleMenu(){serverMenu.classList.toggle('show')}
+function start(){if(!servers.length && !episodes.length)return;started=true;let u=episodes.length?episodes[cur].url:servers[cur];play(u);ui();if(isSeries)buildEpiList()}
+function toggle(){if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}}
 function toggleFS(){if(!document.fullscreenElement)wrap.requestFullscreen();else document.exitFullscreen()}
+function skipIntro(){if(video.duration)video.currentTime+=85;skipBtn.classList.remove('show')}
+function toggleCC(){ccOn=!ccOn;document.getElementById('ccBtn').style.opacity=ccOn?'1':'.4';if(video.textTracks&&video.textTracks[0])video.textTracks[0].mode=ccOn?'showing':'hidden'}
+function toggleEpi(){epiDrawer.classList.toggle('show')}
+function toggleMenu(){
+ if(serverMenu.classList.contains('show')){serverMenu.classList.remove('show');return}
+ let html='<div class="menuTitle">CALIDAD</div><button class="qOpt active">Auto ●</button><button class="qOpt">1080p</button><button class="qOpt">720p</button><button class="qOpt">480p</button>'
+ if(isSeries)html+='<div class="menuTitle" style="margin-top:8px">VELOCIDAD</div><button class="qOpt">1x</button><button class="qOpt">1.25x</button><button class="qOpt">1.5x</button>'
+ else html+='<div class="menuTitle" style="margin-top:8px">SERVIDORES</div>'+servers.map((u,i)=>`<button class="srvOpt ${i==cur?'active':''}" onclick="selServ(${i})"><span>SERVIDOR 0${i+1}</span><span>${i==cur?'●':''}</span></button>`).join('')
+ serverMenu.innerHTML=html;serverMenu.classList.add('show')
+}
+function selServ(i){cur=i;serverMenu.classList.remove('show');if(started)play(servers[i])}
 function seek(ev){if(!video.duration)return;let r=ev.currentTarget.getBoundingClientRect();let p=(ev.clientX-r.left)/r.width;video.currentTime=p*video.duration}
+progWrap.addEventListener('click',seek)
+progWrap.addEventListener('mousemove',(e)=>{
+ if(!video.duration)return;let r=progWrap.getBoundingClientRect();let p=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));let t2=p*video.duration
+ let m=Math.floor(t2/60).toString().padStart(2,'0'),s=Math.floor(t2%60).toString().padStart(2,'0')
+ previewTime.innerText=`${m}:${s}`;previewTip.style.left=e.clientX+'px';previewTip.style.display='block'
+})
+progWrap.addEventListener('mouseleave',()=>{previewTip.style.display='none'})
 video.addEventListener('timeupdate',()=>{
  if(!video.duration)return
- let pc=(video.currentTime/video.duration)*100
- progFill.style.width=pc+'%'
+ let pc=(video.currentTime/video.duration)*100;progFill.style.width=pc+'%'
  let cm=Math.floor(video.currentTime/60).toString().padStart(2,'0'),cs=Math.floor(video.currentTime%60).toString().padStart(2,'0'),dm=Math.floor(video.duration/60).toString().padStart(2,'0'),ds=Math.floor(video.duration%60).toString().padStart(2,'0')
  timeEl.innerText=`${cm}:${cs} / ${dm}:${ds}`
+ if(video.currentTime>8&&video.currentTime<90)skipBtn.classList.add('show');else skipBtn.classList.remove('show')
 })
-video.addEventListener('play',()=>{
- ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
- pauseOverlay.classList.remove('show')
- ui()
-})
-video.addEventListener('pause',()=>{
- ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>'
- pauseOverlay.classList.add('show')
- pauseIcon.innerHTML='<svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
- ui()
-})
-function ui(){
- wrap.classList.add('show')
- topBar.classList.remove('hide')
- bottom.classList.remove('hide')
- clearTimeout(hideT)
- if(started&&!video.paused){
-  hideT=setTimeout(()=>{topBar.classList.add('hide');bottom.classList.add('hide');wrap.classList.remove('show');serverMenu.classList.remove('show')},3500)
- }
-}
-wrap.addEventListener('mousemove',ui)
-wrap.addEventListener('click',(e)=>{if(!e.target.closest('#serverMenu')&&!e.target.closest('.cBtn'))serverMenu.classList.remove('show');ui()})
-// crear menu servidores
-if(servers.length){
- servers.forEach((u,i)=>{
-  let b=document.createElement('button')
-  b.className='srvOpt'+(i==0?' active':'')
-  b.innerHTML=`<span>SERVIDOR 0${i+1}</span><span>${i==cur?'●':''}</span>`
-  b.onclick=()=>{
-   cur=i
-   document.querySelectorAll('.srvOpt').forEach(x=>x.classList.remove('active'))
-   b.classList.add('active')
-   serverMenu.classList.remove('show')
-   if(started)play(u)
-  }
-  serverMenu.appendChild(b)
+video.addEventListener('play',()=>{ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';pauseOverlay.classList.remove('show');ui()})
+video.addEventListener('pause',()=>{ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>';pauseOverlay.classList.add('show');ui()})
+video.addEventListener('ended',()=>{if(isSeries)autoNext()})
+function buildEpiList(){
+ epiList.innerHTML=''
+ episodes.forEach((ep,idx)=>{
+  let div=document.createElement('div');div.className='epiItem'+(idx==cur?' active':'')
+  div.innerHTML=`<div class="epiNum">${ep.n}</div><div class="epiInfo"><b>${ep.t}</b><small>${ep.d||'24 min'}</small></div>`
+  div.onclick=()=>{cur=idx;play(ep.url);document.querySelectorAll('.epiItem').forEach(x=>x.classList.remove('active'));div.classList.add('active');epiDrawer.classList.remove('show')}
+  epiList.appendChild(div)
  })
 }
-document.addEventListener('contextmenu',e=>e.preventDefault())
+function autoNext(){
+ if(cur>=episodes.length-1 && cur>=servers.length-1)return
+ nextOverlay.classList.add('show')
+ let nextEpObj=episodes[cur+1]||{t:`Episodio ${cur+2}`}
+ document.getElementById('nextName').innerText=nextEpObj.t
+ let c=5;document.getElementById('count').innerText=c;document.getElementById('nextFill').style.width='0%'
+ countInt=setInterval(()=>{c--;document.getElementById('count').innerText=c;document.getElementById('nextFill').style.width=((5-c)/5*100)+'%';if(c<=0){playNextNow()}},1000)
+}
+function playNextNow(){clearInterval(countInt);nextOverlay.classList.remove('show');cur++;let u=episodes.length?episodes[cur]?.url:servers[cur];if(u)play(u);buildEpiList()}
+function cancelNext(){clearInterval(countInt);nextOverlay.classList.remove('show')}
+function ui(){wrap.classList.add('show');topBar.classList.remove('hide');bottom.classList.remove('hide');clearTimeout(hideT);if(started&&!video.paused){hideT=setTimeout(()=>{topBar.classList.add('hide');bottom.classList.add('hide');wrap.classList.remove('show');serverMenu.classList.remove('show')},3500)}}
+wrap.addEventListener('mousemove',ui);wrap.addEventListener('click',ui)
 </script>
 </body>
 </html>
