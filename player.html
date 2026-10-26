@@ -3,128 +3,170 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>XonaPlay Netflix</title>
+<title>XonaPlay Netflix V7 Pro</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Plus Jakarta Sans',Arial}
 #wrap{position:relative;width:100%;height:100vh;background:#000;overflow:hidden;cursor:none}
-#wrap.showCursor{cursor:default}
-#bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(28px) brightness(0.35);transform:scale(1.1);transition:.8s}
-#bgGradient{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg, #000 0%, rgba(0,0,0,.8) 20%, transparent 50%, rgba(0,0,0,.7) 100%)}
-#topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(180deg, rgba(0,0,0,.9) 0%, transparent 100%);transition:.4s}
-#topBar.hide{transform:translateY(-100%);opacity:0}
-.logo{font-weight:800;font-size:18px;color:#fff;display:flex;gap:8px;text-transform:uppercase}
+#wrap.show{cursor:default}
+#bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(32px) brightness(.32);transform:scale(1.12);transition:.8s}
+#bgGradient{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,#000 18%,rgba(0,0,0,.65) 38%,transparent 68%,rgba(0,0,0,.7) 100%)}
+#topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(180deg,rgba(0,0,0,.9) 0%,transparent 100%);transition:.4s}
+#topBar.hide{transform:translateY(-110%);opacity:0}
+.logo{font-weight:800;font-size:17px;color:#fff;text-transform:uppercase;display:flex;gap:7px;letter-spacing:.5px}
 .logo span{color:#7c3aed}
-.titleBox b{color:#fff;font-size:14px;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.titleBox small{color:#aaa;font-size:11px}
-.servers{display:flex;gap:8px}
-.btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);color:#ddd;padding:7px 16px;border-radius:100px;cursor:pointer;font-size:11px;font-weight:800;backdrop-filter:blur(10px)}
-.btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed;box-shadow:0 0 20px rgba(124,58,237,.6)}
-#center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;text-align:center;transition:.4s}
-#center.hide{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.9)}
-#bigPlay{width:86px;height:86px;background:#7c3aed;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 40px rgba(124,58,237,.7);margin:0 auto 16px}
-#centerTitle{color:#fff;font-size:23px;font-weight:800;text-shadow:0 4px 20px rgba(0,0,0,.8);max-width:560px;line-height:1.2}
-#centerSub{color:rgba(255,255,255,.6);font-size:11px;margin-top:8px;font-weight:700;letter-spacing:.5px}
-#player,#video{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:10;background:#000}
+#titleTxt{color:#fff;font-size:13px;font-weight:700;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#subTxt{color:#aaa;font-size:10px;font-weight:600;margin-top:2px}
+#center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;text-align:center;transition:.35s cubic-bezier(.2,.8,.2,1)}
+#center.hide{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.88)}
+#bigPlay{width:90px;height:90px;background:#7c3aed;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 40px rgba(124,58,237,.75),0 8px 24px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
+#bigPlay:hover{transform:scale(1.08)}
+#bigPlay svg{margin-left:3px}
+#centerTitle{color:#fff;font-size:23px;font-weight:800;line-height:1.2;text-shadow:0 4px 24px rgba(0,0,0,.9);max-width:540px}
+#centerSub{color:rgba(255,255,255,.65);font-size:11px;margin-top:8px;font-weight:700;letter-spacing:.4px}
+#pauseOverlay{position:absolute;inset:0;z-index:55;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.25);backdrop-filter:blur(2px)}
+#pauseOverlay.show{display:flex}
+#pauseIcon{width:110px;height:110px;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+#player,#video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:10}
 #video{display:none}
-/* NETFLIX BOTTOM BAR */
-#bottomBar{position:absolute;bottom:0;left:0;right:0;z-index:95;padding:0 22px 14px 22px;background:linear-gradient(0deg, rgba(0,0,0,.95) 0%, rgba(0,0,0,.7) 40%, transparent 100%);transition:.4s;transform:translateY(0)}
-#bottomBar.hide{transform:translateY(100%);opacity:0}
-#progressWrap{width:100%;height:16px;display:flex;align-items:center;cursor:pointer;margin-bottom:10px}
-#progressBar{width:100%;height:4px;background:rgba(255,255,255,.25);border-radius:10px;position:relative;overflow:hidden;transition:height .2s}
-#progressWrap:hover #progressBar{height:6px}
-#progressFilled{height:100%;width:0%;background:#7c3aed;border-radius:10px;position:relative;transition:width .1s linear}
-#progressFilled::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;background:#7c3aed;border-radius:50%;box-shadow:0 0 10px rgba(124,58,237,.8);opacity:0;transition:.2s}
-#progressWrap:hover #progressFilled::after{opacity:1}
-#controlsRow{display:flex;align-items:center;justify-content:space-between}
-.leftControls,.rightControls{display:flex;align-items:center;gap:16px}
-.ctrlBtn{background:transparent;border:0;color:#fff;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:.2s}
-.ctrlBtn:hover{opacity:1;transform:scale(1.1)}
-.ctrlBtn svg{width:22px;height:22px;fill:#fff}
-#time{color:#ddd;font-size:12px;font-weight:600;letter-spacing:.3px}
-#bottomTitle{color:#fff;font-size:13px;font-weight:700;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.9}
-#bottomMarca{color:rgba(255,255,255,.6);font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;backdrop-filter:blur(6px)}
-#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:40;display:none}
+#bottom{position:absolute;bottom:0;left:0;right:0;z-index:95;padding:0 20px 14px 20px;background:linear-gradient(0deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.75) 55%,transparent 100%);transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .4s}
+#bottom.hide{transform:translateY(110%);opacity:0}
+#progWrap{width:100%;height:20px;display:flex;align-items:center;cursor:pointer;position:relative}
+#progBg{width:100%;height:4px;background:rgba(255,255,255,.3);border-radius:99px;transition:height .22s cubic-bezier(.2,.8,.2,1),background .22s}
+#progWrap:hover #progBg{height:8px;background:rgba(255,255,255,.38)}
+#progFill{height:100%;width:0%;background:#7c3aed;border-radius:99px;position:relative;transition:width .08s linear}
+#progFill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%) scale(0);width:14px;height:14px;background:#7c3aed;border-radius:50%;box-shadow:0 0 12px rgba(124,58,237,.9),0 2px 6px rgba(0,0,0,.4);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s;opacity:0}
+#progWrap:hover #progFill::after{transform:translateY(-50%) scale(1);opacity:1}
+#ctrlRow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.cLeft,.cRight{display:flex;align-items:center;gap:14px}
+.cBtn{background:transparent;border:0;color:#fff;cursor:pointer;opacity:.92;transition:.2s;width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+.cBtn:hover{opacity:1;transform:scale(1.12)}
+.cBtn svg{width:24px;height:24px;fill:#fff}
+#time{color:#e8e8e8;font-size:12px;font-weight:600;letter-spacing:.2px;min-width:108px}
+#bottomTitle{color:#fff;font-size:12px;font-weight:600;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85}
+#marcaPill{color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 12px;border-radius:20px;backdrop-filter:blur(6px)}
+#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:160px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none}
+#serverMenu.show{display:block;animation:menuIn .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes menuIn{0%{transform:translateY(10px) scale(.96);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+.srvOpt{width:100%;text-align:left;background:transparent;border:0;color:#a5a5c5;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.srvOpt:hover{background:#1f1f35;color:#fff}
+.srvOpt.active{background:#7c3aed;color:#fff}
+#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;display:none}
 .spinner{width:46px;height:46px;border:3px solid rgba(255,255,255,.12);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<div id="wrap" class="showCursor">
+<div id="wrap" class="show">
  <div id="bgPoster"></div><div id="bgGradient"></div>
  <div id="topBar">
-  <div style="display:flex;gap:16px;align-items:center">
-   <div class="logo">▶ <span id="logoSpan">XONAPLAY</span></div>
-   <div class="titleBox"><b id="titleTxt"></b><small id="subTxt"></small></div>
-  </div>
-  <div class="servers" id="serverBox"></div>
+  <div style="display:flex;gap:14px;align-items:center"><div class="logo">▶ <span id="logoSpan">XONAPLAY</span></div><div><b id="titleTxt"></b><div id="subTxt"></div></div></div>
+  <div style="width:32px"></div>
  </div>
- <div id="center">
-  <div id="bigPlay" onclick="startPlay()"><svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5.14v14l11-7-11-7z"/></svg></div>
-  <div id="centerTitle"></div>
-  <div id="centerSub"></div>
- </div>
+ <div id="center"><div id="bigPlay" onclick="start()"><svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5.14v14l11-7-11-7z"/></svg></div><div id="centerTitle"></div><div id="centerSub"></div></div>
+ <div id="pauseOverlay" onclick="toggle()"><div id="pauseIcon"><svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M8 5.14v14l11-7-11-7z"/></svg></div></div>
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
- <video id="video" playsinline></video>
- <div id="bottomBar" class="hide">
-  <div id="progressWrap" onclick="seek(event)"><div id="progressBar"><div id="progressFilled"></div></div></div>
-  <div id="controlsRow">
-   <div class="leftControls">
-    <button class="ctrlBtn" id="playPauseBtn" onclick="togglePlay()"><svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg></button>
-    <button class="ctrlBtn" onclick="toggleMute()"><svg id="volIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
+ <video id="video"></video>
+ <div id="serverMenu"></div>
+ <div id="bottom" class="hide">
+  <div id="progWrap" onclick="seek(event)"><div id="progBg"><div id="progFill"></div></div></div>
+  <div id="ctrlRow">
+   <div class="cLeft">
+    <button class="cBtn" id="ppBtn" onclick="toggle()"><svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg></button>
+    <button class="cBtn" onclick="video.muted=!video.muted"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
     <span id="time">00:00 / 00:00</span>
     <span id="bottomTitle"></span>
    </div>
-   <div class="rightControls">
-    <span id="bottomMarca"></span>
-    <button class="ctrlBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+   <div class="cRight">
+    <span id="marcaPill"></span>
+    <button class="cBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.8"/><circle cx="19.5" cy="12" r="1.8"/><circle cx="4.5" cy="12" r="1.8"/></svg></button>
+    <button class="cBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
    </div>
   </div>
  </div>
  <div id="loader"><div class="spinner"></div></div>
 </div>
 <script>
-function getParam(n){let m=location.href.match(new RegExp('[?&]'+n+'=([^&]+)'));if(!m)return null;let v=decodeURIComponent(m[1]);try{if(v.length>60&&!v.includes('http')&&!v.includes('%'))v=atob(v);}catch(e){}try{v=decodeURIComponent(v);}catch(e){}return v;}
-let servers=[];['s1','s2','s3','s4'].forEach(k=>{let v=getParam(k);if(v)servers.push(v);});
-let titulo=getParam('titulo')||'';let poster=getParam('poster');let year=getParam('year')||'2015';let marcaRaw=getParam('marca')||'XONAPLAY';let marca=decodeURIComponent(marcaRaw).toUpperCase();let t=getParam('t'),e=getParam('e');
-document.getElementById('titleTxt').innerText=decodeURIComponent(titulo);
-document.getElementById('centerTitle').innerText=decodeURIComponent(titulo);
-document.getElementById('bottomTitle').innerText=decodeURIComponent(titulo);
-document.getElementById('subTxt').innerText=(t&&e)?`T${t} • E${e} • ${year}`:`${year} • HD`;
-document.getElementById('logoSpan').innerText=marca;
-document.getElementById('bottomMarca').innerText=marca;
-document.getElementById('centerSub').innerText='Toca para reproducir • '+marca;
-if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http'))document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`;}catch(e){}}
-const topBar=document.getElementById('topBar'),bottomBar=document.getElementById('bottomBar'),serverBox=document.getElementById('serverBox'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),wrap=document.getElementById('wrap'),progressFilled=document.getElementById('progressFilled'),timeEl=document.getElementById('time'),playPauseBtn=document.getElementById('playPauseBtn');
-let hls=null,cur=0,started=false,timer=null;
-function isMedia(u){let l=u.toLowerCase();return l.includes('.m3u8')||l.includes('.mp4')||l.includes('.webm')}
+function g(n){let m=location.href.match(new RegExp('[?&]'+n+'=([^&]+)'));if(!m)return null;let v=decodeURIComponent(m[1]);try{if(v.length>60&&!v.includes('http'))v=atob(v)}catch(e){}try{v=decodeURIComponent(v)}catch(e){}return v}
+let servers=[];['s1','s2','s3','s4'].forEach(k=>{let v=g(k);if(v)servers.push(v)})
+let titulo=g('titulo')||'',poster=g('poster'),year=g('year')||'2015',marca=(g('marca')||'XONAPLAY').toUpperCase(),t=g('t'),e=g('e')
+let decTitle=decodeURIComponent(titulo||'')
+document.getElementById('titleTxt').innerText=decTitle
+document.getElementById('centerTitle').innerText=decTitle
+document.getElementById('bottomTitle').innerText=decTitle
+document.getElementById('logoSpan').innerText=marca
+document.getElementById('marcaPill').innerText=marca
+document.getElementById('centerSub').innerText='Toca para reproducir • '+marca
+document.getElementById('subTxt').innerText=(t&&e)?`T${t} • E${e} • ${year}`:`${year} • HD`
+if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http'))document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`}catch(e){}}
+const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),pauseIcon=document.getElementById('pauseIcon'),serverMenu=document.getElementById('serverMenu')
+let hls=null,cur=0,started=false,hideT=null
+function isMedia(u){return u.toLowerCase().includes('.m3u8')||u.toLowerCase().includes('.mp4')||u.toLowerCase().includes('.webm')}
 function showLoad(b){loader.style.display=b?'block':'none'}
 function play(url){
- showLoad(true);if(hls){try{hls.destroy()}catch(e){}hls=null}
- center.classList.add('hide');document.getElementById('bgPoster').style.opacity='0';document.getElementById('bgGradient').style.opacity='0';
- bottomBar.classList.remove('hide');
+ showLoad(true);if(hls){try{hls.destroy()}catch(e){}}
+ center.classList.add('hide');document.getElementById('bgPoster').style.opacity='0';document.getElementById('bgGradient').style.opacity='0'
+ bottom.classList.remove('hide')
  if(isMedia(url)){
-  iframe.style.display='none';iframe.src='about:blank';video.style.display='block';
-  if(url.toLowerCase().includes('.m3u8')&&Hls.isSupported()){
-   hls=new Hls();hls.loadSource(url);hls.attachMedia(video);
-   hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);video.play()});
-  }else{video.src=url;video.oncanplay=()=>showLoad(false);video.play()}
- }else{video.pause();video.style.display='none';iframe.style.display='block';iframe.src=url;setTimeout(()=>showLoad(false),1500)}
+  iframe.style.display='none';video.style.display='block'
+  if(url.toLowerCase().includes('.m3u8')&&Hls.isSupported()){hls=new Hls();hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);video.play()})}
+  else{video.src=url;video.oncanplay=()=>showLoad(false);video.play()}
+ }else{video.pause();video.style.display='none';iframe.style.display='block';iframe.src=url;setTimeout(()=>showLoad(false),1000)}
 }
-function startPlay(){if(!servers.length)return;started=true;play(servers[cur]);showUI()}
-function togglePlay(){if(video.style.display==='block'){if(video.paused){video.play()}else{video.pause()}}updatePlayIcon()}
-function updatePlayIcon(){let isPaused=video.style.display==='block'?video.paused:true;playPauseBtn.innerHTML=isPaused?'<svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>':'<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'}
-function toggleMute(){video.muted=!video.muted}
-function toggleFS(){if(!document.fullscreenElement){wrap.requestFullscreen()}else{document.exitFullscreen()}}
-function seek(e){if(video.style.display!=='block'||!video.duration)return;let rect=e.currentTarget.getBoundingClientRect();let pct=(e.clientX-rect.left)/rect.width;video.currentTime=pct*video.duration}
-video.addEventListener('timeupdate',()=>{if(!video.duration)return;let pct=(video.currentTime/video.duration)*100;progressFilled.style.width=pct+'%';let curM=Math.floor(video.currentTime/60).toString().padStart(2,'0');let curS=Math.floor(video.currentTime%60).toString().padStart(2,'0');let durM=Math.floor(video.duration/60).toString().padStart(2,'0');let durS=Math.floor(video.duration%60).toString().padStart(2,'0');timeEl.innerText=`${curM}:${curS} / ${durM}:${durS}`});
-video.addEventListener('play',()=>{updatePlayIcon();showUI()});video.addEventListener('pause',updatePlayIcon);
-function showUI(){wrap.classList.add('showCursor');topBar.classList.remove('hide');bottomBar.classList.remove('hide');clearTimeout(timer);if(started){timer=setTimeout(()=>{if(!video.paused){topBar.classList.add('hide');bottomBar.classList.add('hide');wrap.classList.remove('showCursor')}},3000)}}
-wrap.addEventListener('mousemove',showUI);wrap.addEventListener('click',showUI);
-if(servers.length){servers.forEach((url,i)=>{let b=document.createElement('button');b.className='btn'+(i==0?' active':'');b.innerText='SERVIDOR '+(i+1).toString().padStart(2,'0');b.onclick=()=>{cur=i;document.querySelectorAll('.btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(started)play(url)};serverBox.appendChild(b);})}
-document.addEventListener('contextmenu',e=>e.preventDefault());
+function start(){if(!servers.length)return;started=true;play(servers[cur]);ui()}
+function toggle(){if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}else{/* iframe no controlable */}}
+function toggleMenu(){serverMenu.classList.toggle('show')}
+function toggleFS(){if(!document.fullscreenElement)wrap.requestFullscreen();else document.exitFullscreen()}
+function seek(ev){if(!video.duration)return;let r=ev.currentTarget.getBoundingClientRect();let p=(ev.clientX-r.left)/r.width;video.currentTime=p*video.duration}
+video.addEventListener('timeupdate',()=>{
+ if(!video.duration)return
+ let pc=(video.currentTime/video.duration)*100
+ progFill.style.width=pc+'%'
+ let cm=Math.floor(video.currentTime/60).toString().padStart(2,'0'),cs=Math.floor(video.currentTime%60).toString().padStart(2,'0'),dm=Math.floor(video.duration/60).toString().padStart(2,'0'),ds=Math.floor(video.duration%60).toString().padStart(2,'0')
+ timeEl.innerText=`${cm}:${cs} / ${dm}:${ds}`
+})
+video.addEventListener('play',()=>{
+ ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
+ pauseOverlay.classList.remove('show')
+ ui()
+})
+video.addEventListener('pause',()=>{
+ ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>'
+ pauseOverlay.classList.add('show')
+ pauseIcon.innerHTML='<svg width="42" height="42" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
+ ui()
+})
+function ui(){
+ wrap.classList.add('show')
+ topBar.classList.remove('hide')
+ bottom.classList.remove('hide')
+ clearTimeout(hideT)
+ if(started&&!video.paused){
+  hideT=setTimeout(()=>{topBar.classList.add('hide');bottom.classList.add('hide');wrap.classList.remove('show');serverMenu.classList.remove('show')},3500)
+ }
+}
+wrap.addEventListener('mousemove',ui)
+wrap.addEventListener('click',(e)=>{if(!e.target.closest('#serverMenu')&&!e.target.closest('.cBtn'))serverMenu.classList.remove('show');ui()})
+// crear menu servidores
+if(servers.length){
+ servers.forEach((u,i)=>{
+  let b=document.createElement('button')
+  b.className='srvOpt'+(i==0?' active':'')
+  b.innerHTML=`<span>SERVIDOR 0${i+1}</span><span>${i==cur?'●':''}</span>`
+  b.onclick=()=>{
+   cur=i
+   document.querySelectorAll('.srvOpt').forEach(x=>x.classList.remove('active'))
+   b.classList.add('active')
+   serverMenu.classList.remove('show')
+   if(started)play(u)
+  }
+  serverMenu.appendChild(b)
+ })
+}
+document.addEventListener('contextmenu',e=>e.preventDefault())
 </script>
 </body>
 </html>
