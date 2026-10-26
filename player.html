@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>XonaPlay V9.1 Calidad Real</title>
+<title>XonaPlay V10 PRO MAX</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -35,17 +35,15 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #progBg{width:100%;height:4px;background:rgba(255,255,255,.3);border-radius:99px;transition:.22s}
 #progWrap:hover #progBg{height:8px;background:rgba(255,255,255,.38)}
 #progFill{height:100%;width:0%;background:#7c3aed;border-radius:99px;position:relative}
-#progFill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%) scale(0);width:14px;height:14px;background:#7c3aed;border-radius:50%;box-shadow:0 0 12px rgba(124,58,237,.9);transition:.22s;opacity:0}
-#progWrap:hover #progFill::after{transform:translateY(-50%) scale(1);opacity:1}
 #previewTip{position:absolute;bottom:36px;transform:translateX(-50%);background:#14141f;border:1px solid #2a2a4a;padding:6px 8px;border-radius:10px;display:none;pointer-events:none;z-index:99;box-shadow:0 8px 20px rgba(0,0,0,.6)}
 #previewBox{width:140px;height:78px;background:#000;border-radius:6px;background-size:cover;background-position:center;margin-bottom:4px}
 #previewTip b{color:#fff;font-size:11px;display:block;text-align:center}
 #ctrlRow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.cLeft,.cRight{display:flex;align-items:center;gap:12px}
-.cBtn{background:transparent;border:0;color:#fff;cursor:pointer;opacity:.92;transition:.2s;width:30px;height:30px;display:flex;align-items:center;justify-content:center}
-.cBtn:hover{opacity:1;transform:scale(1.12)}
-.cBtn svg{width:22px;height:22px;fill:#fff}
-#time{color:#e8e8e8;font-size:12px;font-weight:600;min-width:108px}
+.cLeft,.cRight{display:flex;align-items:center;gap:10px}
+.cBtn{background:transparent;border:0;color:#fff;cursor:pointer;opacity:.92;transition:.2s;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.cBtn:hover{opacity:1;background:rgba(255,255,255,.12)}
+.cBtn svg{width:20px;height:20px;fill:#fff}
+#time{color:#e8e8e8;font-size:11px;font-weight:600;min-width:108px}
 #marcaPill{color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 12px;border-radius:20px}
 #epiBtn{display:none}
 #epiBtn.show{display:flex}
@@ -61,18 +59,19 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 .epiItem.active .epiNum{background:rgba(255,255,255,.2);color:#fff}
 .epiInfo b{color:#fff;font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 .epiInfo small{color:#888;font-size:10px}
-#nextOverlay{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;flex-direction:column}
-#nextOverlay.show{display:flex}
-#nextOverlay b{color:#fff;font-size:22px;margin-bottom:6px}
-#nextOverlay p{color:#aaa;font-size:13px}
+#nextOverlay,#resumeOverlay{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;flex-direction:column}
+#nextOverlay.show,#resumeOverlay.show{display:flex}
+#nextOverlay b,#resumeOverlay b{color:#fff;font-size:22px;margin-bottom:6px;text-align:center;padding:0 20px}
+#nextOverlay p,#resumeOverlay p{color:#aaa;font-size:13px;text-align:center;padding:0 20px}
 #nextBar{width:220px;height:4px;background:rgba(255,255,255,.2);border-radius:10px;margin-top:16px;overflow:hidden}
 #nextFill{height:100%;width:0%;background:#7c3aed;transition:width 1s linear}
-#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:190px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;max-height:320px;overflow:auto}
+#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:220px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;max-height:420px;overflow:auto}
 #serverMenu.show{display:block}
 .srvOpt,.qOpt{width:100%;text-align:left;background:transparent;border:0;color:#a5a5c5;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between}
 .srvOpt:hover,.qOpt:hover{background:#1f1f35;color:#fff}
 .srvOpt.active,.qOpt.active{background:#7c3aed;color:#fff}
-.menuTitle{color:#666;font-size:9px;font-weight:800;letter-spacing:1px;padding:8px 12px 4px 12px}
+.menuTitle{color:#666;font-size:9px;font-weight:800;letter-spacing:1px;padding:10px 12px 4px 12px;border-top:1px solid #1e1e3a;margin-top:6px}
+.menuTitle:first-child{border-top:0;margin-top:0}
 #loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;display:none}
 .spinner{width:46px;height:46px;border:3px solid rgba(255,255,255,.12);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -89,7 +88,8 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
  <video id="video"></video>
  <div id="previewTip"><div id="previewBox"></div><b id="previewTime">00:00</b></div>
  <div id="epiDrawer"><div id="epiHead"><b id="epiHeadTitle">Episodios</b><button class="cBtn" onclick="document.getElementById('epiDrawer').classList.remove('show')">✕</button></div><div id="epiList"></div></div>
- <div id="nextOverlay"><b>Siguiente episodio en <span id="count">5</span>s</b><p id="nextName">Cargando...</p><div id="nextBar"><div id="nextFill"></div></div><div style="display:flex;gap:10px;margin-top:16px"><button onclick="playNextNow()" style="background:#7c3aed;border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:800">REPRODUCIR YA</button><button onclick="cancelNext()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer">CANCELAR</button></div></div>
+ <div id="resumeOverlay"><b id="resumeTitle">¿Continuar viendo?</b><p id="resumeDesc">Te quedaste en el minuto 00:00</p><div style="display:flex;gap:10px;margin-top:16px"><button onclick="resumeYes()" style="background:#7c3aed;border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer;font-weight:800">SÍ, CONTINUAR</button><button onclick="resumeNo()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer">EMPEZAR DE CERO</button></div></div>
+ <div id="nextOverlay"><b>Siguiente episodio en <span id="count">5</span>s</b><p id="nextName"></p><div id="nextBar"><div id="nextFill"></div></div><div style="display:flex;gap:10px;margin-top:16px"><button onclick="playNextNow()" style="background:#7c3aed;border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:800">REPRODUCIR YA</button><button onclick="cancelNext()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:8px 18px;border-radius:20px;cursor:pointer">CANCELAR</button></div></div>
  <div id="serverMenu"></div>
  <div id="bottom" class="hide">
   <div id="progWrap"><div id="progBg"><div id="progFill"></div></div></div>
@@ -98,13 +98,15 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
     <button class="cBtn" id="ppBtn" onclick="toggle()"><svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg></button>
     <button class="cBtn" onclick="video.muted=!video.muted"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg></button>
     <span id="time">00:00 / 00:00</span>
-    <button class="cBtn" id="epiBtn" onclick="toggleEpi()"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></button>
+    <button class="cBtn" id="epiBtn" onclick="toggleEpi()" title="Episodios"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></button>
    </div>
    <div class="cRight">
-    <button class="cBtn" id="ccBtn" onclick="toggleCC()" style="opacity:.4"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H8v1h4v2H6V8h6v2zm8 4h-6v-1h4v-1h-4v-1h4v-1h-6v5h6v-1z"/></svg></button>
+    <button class="cBtn" onclick="togglePiP()" title="Ventana flotante PiP"><svg viewBox="0 0 24 24"><path d="M19 7H9v10h10V7zM21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg></button>
+    <button class="cBtn" onclick="toggleCast()" title="Enviar a TV - Chromecast"><svg viewBox="0 0 24 24"><path d="M1 18v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm0-5v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm0-5v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1V8c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm4.5 9.5c0 .55.45 1 1 1H21c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1H6.5c-.55 0-1 .45-1 1v12.5z"/></svg></button>
+    <button class="cBtn" id="ccBtn" onclick="toggleCC()" style="opacity:.4" title="Subtítulos"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H8v1h4v2H6V8h6v2zm8 4h-6v-1h4v-1h-4v-1h4v-1h-6v5h6v-1z"/></svg></button>
     <span id="marcaPill"></span>
-    <button class="cBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><circle cx="4.5" cy="12" r="1.6"/></svg></button>
-    <button class="cBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+    <button class="cBtn" onclick="toggleMenu()" title="Calidad y Velocidad"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><circle cx="4.5" cy="12" r="1.6"/></svg></button>
+    <button class="cBtn" onclick="toggleFS()" title="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
    </div>
   </div>
  </div>
@@ -120,91 +122,79 @@ let isSeries = false
 if(tipo && tipo.toLowerCase().includes('serie')) isSeries=true
 if(epsRaw) isSeries=true
 if(t && e) isSeries=true
-if(g('temporada')||g('season')) isSeries=true
-if(servers.length>1 && (t||epsRaw)) isSeries=true
 document.getElementById('titleTxt').innerText=decTitle
 document.getElementById('centerTitle').innerText=decTitle
 document.getElementById('logoSpan').innerText=marca
 document.getElementById('marcaPill').innerText=marca
 document.getElementById('centerSub').innerText='Toca para reproducir • '+marca
-document.getElementById('modeBadge').innerText=isSeries?'MODO SERIE • AUTO-DETECT':'MODO PELÍCULA • AUTO-DETECT'
-document.getElementById('epiHeadTitle').innerText=isSeries?`Episodios - T${t||1}`:''
+document.getElementById('modeBadge').innerText=isSeries?'MODO SERIE':'MODO PELÍCULA'
 if(isSeries)document.getElementById('epiBtn').classList.add('show')
 if(t&&e)document.getElementById('subTxt').innerText=`T${t} • E${e} • ${year}`
 else document.getElementById('subTxt').innerText=year+' • HD'
 if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http')){document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`;document.getElementById('previewBox').style.backgroundImage=`url('${p}')`}}catch(e){}}
-const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),serverMenu=document.getElementById('serverMenu'),progWrap=document.getElementById('progWrap'),previewTip=document.getElementById('previewTip'),previewTime=document.getElementById('previewTime'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay')
-let hls=null,cur=0,started=false,hideT=null,ccOn=false,countInt=null,currentQuality=-1
+const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),pauseOverlay=document.getElementById('pauseOverlay'),serverMenu=document.getElementById('serverMenu'),progWrap=document.getElementById('progWrap'),previewTip=document.getElementById('previewTip'),previewTime=document.getElementById('previewTime'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay'),resumeOverlay=document.getElementById('resumeOverlay')
+let hls=null,cur=0,started=false,hideT=null,ccOn=false,countInt=null,currentQuality=-1,pendingTime=0,resumeKey='',resumeTime=0
 let episodes=[]
 try{if(epsRaw){let jsonStr=fromBase64Unicode(epsRaw);episodes=JSON.parse(jsonStr)}}catch(e){try{episodes=JSON.parse(atob(epsRaw))}catch(e2){episodes=[]}}
-if(isSeries && episodes.length===0 && servers.length>1){
- episodes=servers.map((u,i)=>({n:i+1,t:`Episodio ${i+1}`,url:u,d:'24 min'}))
-}
-if(isSeries && episodes.length===0 && t){
- let curE=parseInt(e||1);for(let i=1;i<=10;i++){episodes.push({n:i,t:`Episodio ${i}`,url:servers[0]||'',d:'24 min'})} cur=curE-1
-}
+if(isSeries && episodes.length===0 && servers.length>1){episodes=servers.map((u,i)=>({n:i+1,t:`Episodio ${i+1}`,url:u,d:'24 min'}))}
 function isMedia(u){return u.toLowerCase().includes('.m3u8')||u.toLowerCase().includes('.mp4')||u.toLowerCase().includes('.webm')}
+function getResumeKey(url){return 'xona_resume_'+btoa(url).slice(0,40)+'_'+btoa(decTitle).slice(0,20)}
 function showLoad(b){loader.style.display=b?'block':'none'}
 function play(url){
- showLoad(true);if(hls){try{hls.destroy()}catch(e){}}
- hls=null;currentQuality=-1
+ showLoad(true);if(hls){try{hls.destroy()}catch(e){}} hls=null;currentQuality=-1
  center.classList.add('hide');document.getElementById('bgPoster').style.opacity='0';document.getElementById('bgGradient').style.opacity='0'
  bottom.classList.remove('hide')
+ resumeKey=getResumeKey(url)
+ resumeTime=parseFloat(localStorage.getItem(resumeKey)||0)
+ if(resumeTime>15 && !isNaN(resumeTime)){
+  document.getElementById('resumeDesc').innerText=`Te quedaste en ${fmt(resumeTime)} - ¿Quieres continuar?`
+  resumeOverlay.classList.add('show')
+  pendingTime=resumeTime
+ }else{pendingTime=0}
  if(isMedia(url)){
   iframe.style.display='none';video.style.display='block'
   if(url.toLowerCase().includes('.m3u8')&&Hls.isSupported()){
    hls=new Hls({autoStartLoad:true, capLevelToPlayerSize:false});
    hls.loadSource(url);hls.attachMedia(video);
-   hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);video.play();});
-   hls.on(Hls.Events.LEVEL_SWITCHED,(event,data)=>{currentQuality=data.level;})
-  }
-  else{video.src=url;video.oncanplay=()=>showLoad(false);video.play()}
+   hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);if(pendingTime==0)video.play();});
+   hls.on(Hls.Events.LEVEL_SWITCHED,(ev,d)=>{currentQuality=d.level;})
+  }else{video.src=url;video.oncanplay=()=>{showLoad(false);if(pendingTime==0)video.play();}}
  }else{video.pause();video.style.display='none';iframe.style.display='block';iframe.src=url;setTimeout(()=>showLoad(false),1000)}
 }
+function fmt(s){let m=Math.floor(s/60).toString().padStart(2,'0'),sc=Math.floor(s%60).toString().padStart(2,'0');return `${m}:${sc}`}
+function resumeYes(){resumeOverlay.classList.remove('show');if(pendingTime){video.currentTime=pendingTime;video.play()} pendingTime=0}
+function resumeNo(){resumeOverlay.classList.remove('show');localStorage.removeItem(resumeKey);pendingTime=0;video.currentTime=0;video.play()}
 function start(){if(!servers.length && !episodes.length)return;started=true;let u=episodes.length?episodes[cur].url:servers[cur];play(u);ui();if(isSeries)buildEpiList()}
 function toggle(){if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}}
 function toggleFS(){if(!document.fullscreenElement)wrap.requestFullscreen();else document.exitFullscreen()}
 function toggleCC(){ccOn=!ccOn;document.getElementById('ccBtn').style.opacity=ccOn?'1':'.4';if(video.textTracks&&video.textTracks[0])video.textTracks[0].mode=ccOn?'showing':'hidden'}
 function toggleEpi(){epiDrawer.classList.toggle('show')}
-function setQuality(levelHeight){
- if(!hls){toastQuality('Calidad solo disponible en HLS');return;}
- if(levelHeight==='auto'){hls.currentLevel=-1;currentQuality=-1;serverMenu.classList.remove('show');return;}
- let levels=hls.levels;
- let best=-1;let bestH=0;
- for(let i=0;i<levels.length;i++){
-  let h=levels[i].height||0;
-  if(h<=levelHeight && h>bestH){bestH=h;best=i;}
- }
- if(best==-1){
-  let closest=0;let minDiff=9999;
-  for(let i=0;i<levels.length;i++){let diff=Math.abs((levels[i].height||0)-levelHeight);if(diff<minDiff){minDiff=diff;closest=i;}}
-  best=closest;
- }
- hls.currentLevel=best;currentQuality=best;
- serverMenu.classList.remove('show');
+async function togglePiP(){try{if(document.pictureInPictureElement){await document.exitPictureInPicture()}else{if(video.readyState>0)await video.requestPictureInPicture()}}catch(e){alert('PiP no disponible en este navegador')}}
+async function toggleCast(){try{if(video.remote){await video.remote.prompt()}else if(navigator.presentation){alert('Buscando TV... Asegúrate que tu TV y celular estén en la misma WiFi - Chromecast')}else{alert('Chromecast: Conecta tu TV y celular a la misma WiFi y usa el botón de transmitir del navegador')}}catch(e){}}
+function toggleSpeed(s){video.playbackRate=s;serverMenu.classList.remove('show')}
+function setQuality(h){
+ if(!hls){return}
+ if(h==='auto'){hls.currentLevel=-1;currentQuality=-1;serverMenu.classList.remove('show');return}
+ let best=-1,bestH=0
+ for(let i=0;i<hls.levels.length;i++){let hh=hls.levels[i].height||0;if(hh<=h && hh>bestH){bestH=hh;best=i}}
+ if(best==-1){let closest=0,min=9999;for(let i=0;i<hls.levels.length;i++){let d=Math.abs((hls.levels[i].height||0)-h);if(d<min){min=d;closest=i}}best=closest}
+ hls.currentLevel=best;currentQuality=best;serverMenu.classList.remove('show')
 }
-function toastQuality(msg){/* mini toast en menu */}
 function toggleMenu(){
  if(serverMenu.classList.contains('show')){serverMenu.classList.remove('show');return}
  let html=''
  if(hls && hls.levels && hls.levels.length>0){
-  let levels=[...hls.levels].sort((a,b)=>b.height-a.height);
-  let uniqueHeights=[...new Set(levels.map(l=>l.height))].sort((a,b)=>b-a);
-  html+='<div class="menuTitle">CALIDAD REAL - HLS</div>'
-  let autoActive=currentQuality==-1?'active':''
-  html+=`<button class="qOpt ${autoActive}" onclick="setQuality('auto')"><span>Auto</span><span>${autoActive?'●':''}</span></button>`
-  uniqueHeights.forEach(h=>{
-   let isActive=false;
-   if(hls && currentQuality!=-1){let ch=hls.levels[currentQuality]?.height;isActive=ch==h}
-   html+=`<button class="qOpt ${isActive?'active':''}" onclick="setQuality(${h})"><span>${h}p</span><span>${isActive?'●':''}</span></button>`
-  })
+  let levels=[...hls.levels].sort((a,b)=>b.height-a.height);let uniq=[...new Set(levels.map(l=>l.height))].sort((a,b)=>b-a)
+  html+='<div class="menuTitle">CALIDAD REAL</div>'
+  html+=`<button class="qOpt ${currentQuality==-1?'active':''}" onclick="setQuality('auto')"><span>Auto</span><span>${currentQuality==-1?'●':''}</span></button>`
+  uniq.forEach(hh=>{let active=hls.levels[currentQuality]?.height==hh;html+=`<button class="qOpt ${active?'active':''}" onclick="setQuality(${hh})"><span>${hh}p</span><span>${active?'●':''}</span></button>`})
  }else{
-  html+='<div class="menuTitle">CALIDAD</div>'
-  html+='<button class="qOpt active"><span>Auto ●</span><span>MP4 no tiene calidades</span></button>'
-  html+='<div style="padding:8px 12px;font-size:10px;color:#666;line-height:1.4">Sube el video en .m3u8 con varias calidades para activar 1080p/720p/480p reales</div>'
+  html+='<div class="menuTitle">CALIDAD</div><button class="qOpt active"><span>Auto - MP4</span></button>'
  }
- if(!isSeries){
-  html+='<div class="menuTitle" style="margin-top:8px">SERVIDORES</div>'+servers.map((u,i)=>`<button class="srvOpt ${i==cur?'active':''}" onclick="selServ(${i})"><span>SERVIDOR 0${i+1}</span><span>${i==cur?'●':''}</span></button>`).join('')
+ html+='<div class="menuTitle">VELOCIDAD</div>'
+ ;[0.5,0.75,1,1.25,1.5,1.75,2].forEach(sp=>{let act=video.playbackRate==sp;html+=`<button class="qOpt ${act?'active':''}" onclick="toggleSpeed(${sp})"><span>${sp}x</span><span>${act?'●':''}</span></button>`})
+ if(!isSeries && servers.length>1){
+  html+='<div class="menuTitle">SERVIDORES</div>'+servers.map((u,i)=>`<button class="srvOpt ${i==cur?'active':''}" onclick="selServ(${i})"><span>SERV 0${i+1}</span><span>${i==cur?'●':''}</span></button>`).join('')
  }
  serverMenu.innerHTML=html;serverMenu.classList.add('show')
 }
@@ -222,10 +212,13 @@ video.addEventListener('timeupdate',()=>{
  let pc=(video.currentTime/video.duration)*100;progFill.style.width=pc+'%'
  let cm=Math.floor(video.currentTime/60).toString().padStart(2,'0'),cs=Math.floor(video.currentTime%60).toString().padStart(2,'0'),dm=Math.floor(video.duration/60).toString().padStart(2,'0'),ds=Math.floor(video.duration%60).toString().padStart(2,'0')
  timeEl.innerText=`${cm}:${cs} / ${dm}:${ds}`
+ if(video.currentTime>10 && video.currentTime < video.duration-20 && Math.floor(video.currentTime)%5==0){
+  if(resumeKey) localStorage.setItem(resumeKey, video.currentTime)
+ }
 })
 video.addEventListener('play',()=>{ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';pauseOverlay.classList.remove('show');ui()})
 video.addEventListener('pause',()=>{ppBtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>';pauseOverlay.classList.add('show');ui()})
-video.addEventListener('ended',()=>{if(isSeries)autoNext()})
+video.addEventListener('ended',()=>{if(resumeKey)localStorage.removeItem(resumeKey);if(isSeries)autoNext()})
 function buildEpiList(){
  epiList.innerHTML=''
  episodes.forEach((ep,idx)=>{
