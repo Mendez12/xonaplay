@@ -3,49 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>XonaPlay Player V4 PRO - Para Vender</title>
+<title>XonaPlay Netflix V4 PRO</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Plus Jakarta Sans',Arial}
-#wrap{position:relative;width:100%;height:100vh;background:#000}
-#topBar{
- position:absolute;top:0;left:0;right:0;z-index:100;
- display:flex;align-items:center;gap:8px;flex-wrap:wrap;
- padding:10px 12px;
- background:linear-gradient(180deg,rgba(10,10,20,0.95) 0%, rgba(10,10,20,0.6) 60%, transparent 100%);
- transition:all .4s;
-}
+#wrap{position:relative;width:100%;height:100vh;background:#000;overflow:hidden}
+/* FONDO POSTER NETFLIX */
+#bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(28px) brightness(0.35) saturate(1.2);transform:scale(1.1);transition:all .8s}
+#bgGradient{position:absolute;inset:0;z-index:2;background:radial-gradient(80% 80% at 50% 20%, transparent 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.95) 100%), linear-gradient(0deg, rgba(0,0,0,0.95) 0%, transparent 40%, rgba(0,0,0,0.8) 100%)}
+
+/* TopBar Netflix */
+#topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;transition:all .5s}
 #topBar.hide{transform:translateY(-100%);opacity:0}
-.info{flex:1;min-width:120px}
-.info b{color:#fff;font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
-.info span{color:#8a8aa0;font-size:11px}
-.btn{
- background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);
- color:#bbb;padding:6px 14px;border-radius:20px;cursor:pointer;
- font-size:11px;font-weight:800;letter-spacing:.5px;transition:.2s
-}
-.btn:hover{background:rgba(124,58,237,0.3);color:#fff;border-color:#7c3aed}
-.btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed;box-shadow:0 0 18px rgba(124,58,237,.6)}
-#player,#video{width:100%;height:100vh;background:#000;border:0}
+.left{display:flex;align-items:center;gap:18px}
+.logo{font-weight:800;font-size:18px;letter-spacing:1px;color:#fff;display:flex;align-items:center;gap:8px}
+.logo span{color:#7c3aed}
+.titleBox b{color:#fff;font-size:15px;display:block;line-height:1.1;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titleBox small{color:#9a9ab0;font-size:11px;font-weight:600;margin-top:2px;display:block}
+.servers{display:flex;gap:8px}
+.btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);color:#ddd;padding:8px 18px;border-radius:100px;cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.6px;backdrop-filter:blur(12px);transition:.25s}
+.btn:hover{background:rgba(255,255,255,0.18);color:#fff;transform:translateY(-1px)}
+.btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed;box-shadow:0 0 24px rgba(124,58,237,.6), 0 4px 12px rgba(0,0,0,.4)}
+
+/* Center Play */
+#center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;text-align:center;transition:all .5s}
+#center.hide{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(0.9)}
+#bigPlay{width:88px;height:88px;background:rgba(124,58,237,0.95);border:2px solid rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 40px rgba(124,58,237,.6), 0 8px 32px rgba(0,0,0,.5);margin:0 auto 18px;transition:.25s}
+#bigPlay:hover{transform:scale(1.08);background:#7c3aed;box-shadow:0 0 60px rgba(124,58,237,.8)}
+#bigPlay svg{margin-left:4px}
+#centerTitle{color:#fff;font-size:24px;font-weight:800;letter-spacing:-0.5px;text-shadow:0 4px 20px rgba(0,0,0,.8);max-width:600px;line-height:1.15}
+#centerSub{color:rgba(255,255,255,.65);font-size:12px;margin-top:8px;font-weight:600;letter-spacing:.4px}
+
+/* Player */
+#player,#video{position:absolute;inset:0;width:100%;height:100%;background:transparent;border:0;z-index:10}
 #video{display:none}
-#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;text-align:center}
-.spinner{width:44px;height:44px;border:3px solid rgba(124,58,237,.2);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+#video::-webkit-media-controls-panel{background:linear-gradient(transparent,rgba(0,0,0,.85))}
+
+/* Loader */
+#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:40;display:none;text-align:center}
+.spinner{width:50px;height:50px;border:3px solid rgba(255,255,255,.12);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-#loaderText{color:#7c3aed;font-size:11px;font-weight:800;letter-spacing:1px}
-#watermark{position:absolute;bottom:10px;right:10px;z-index:90;color:rgba(255,255,255,.35);font-size:9px;font-weight:800;letter-spacing:1px;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.08);pointer-events:none}
-#err{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;display:none;text-align:center;background:rgba(20,10,35,.95);border:1px solid #7c3aed55;padding:20px 24px;border-radius:14px}
+#loaderTxt{color:#fff;font-size:11px;font-weight:800;letter-spacing:1.2px;opacity:.8}
+
+#watermark{position:absolute;bottom:14px;right:14px;z-index:90;color:rgba(255,255,255,.35);font-size:9px;font-weight:800;letter-spacing:1.2px;background:rgba(0,0,0,.5);padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px);pointer-events:none}
+#err{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;display:none;text-align:center;background:rgba(18,10,35,.96);border:1px solid #7c3aed66;padding:24px 28px;border-radius:16px;backdrop-filter:blur(20px)}
 </style>
 </head>
 <body>
 <div id="wrap">
+ <div id="bgPoster"></div><div id="bgGradient"></div>
  <div id="topBar">
-  <div class="info">
-   <b id="titleTxt">XONAPLAY V4 PRO</b>
-   <span id="subTxt">Cargando...</span>
+  <div class="left">
+   <div class="logo">▶ <span>XONAPLAY</span></div>
+   <div class="titleBox"><b id="titleTxt">XONAPLAY V4 PRO</b><small id="subTxt">Reproductor Premium</small></div>
   </div>
+  <div class="servers" id="serverBox"></div>
  </div>
- <div id="loader"><div class="spinner"></div><div id="loaderText">CARGANDO VIDEO...</div></div>
+ <div id="center">
+  <div id="bigPlay" onclick="startPlay()"><svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M8 5.14v14l11-7-11-7z"/></svg></div>
+  <div id="centerTitle">Historias corrientes</div>
+  <div id="centerSub">Toca para reproducir • XONAPLAY V4 PRO</div>
+ </div>
+ <div id="loader"><div class="spinner"></div><div id="loaderTxt">CARGANDO</div></div>
  <div id="err"><h3 style="color:#fff;font-size:13px">⚠️ Error</h3><p id="errMsg" style="color:#999;font-size:11px;margin-top:6px"></p></div>
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
  <video id="video" controls autoplay playsinline controlsList="nodownload"></video>
@@ -61,34 +82,45 @@ function getParam(n){
  return v;
 }
 let servers=[];
-['s1','s2','s3','s4'].forEach(k=>{
- let v=getParam(k);
- if(v) servers.push(v);
-});
+['s1','s2','s3','s4'].forEach(k=>{let v=getParam(k); if(v) servers.push(v);});
 let titulo=getParam('titulo')||getParam('serie')||'XONAPLAY V4 PRO';
-let year=getParam('year')||'';
+let poster=getParam('poster');
+let year=getParam('year')||'2024';
 let marca=getParam('marca')||'XONAPLAY';
 let t=getParam('t'); let e=getParam('e');
 
-document.getElementById('titleTxt').innerText=decodeURIComponent(titulo);
-document.getElementById('subTxt').innerText= (t&&e) ? `T${t} • E${e} ${year}` : (year||'Reproductor Oficial');
+let decodedTitle=decodeURIComponent(titulo);
+document.getElementById('titleTxt').innerText=decodedTitle;
+document.getElementById('centerTitle').innerText=decodedTitle;
+document.getElementById('subTxt').innerText= (t&&e) ? `T${t} • E${e} • ${year}` : (year+' • HD');
 document.getElementById('watermark').innerText=marca+' • V4 PRO';
 
+if(poster){
+ try{
+  let p=decodeURIComponent(poster);
+  if(p.startsWith('http')) document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`;
+ }catch(e){}
+}
+
 const topBar=document.getElementById('topBar');
+const serverBox=document.getElementById('serverBox');
 const iframe=document.getElementById('player');
 const video=document.getElementById('video');
+const center=document.getElementById('center');
 const loader=document.getElementById('loader');
 const err=document.getElementById('err');
-let hls=null; let cur=0;
+let hls=null; let cur=0; let started=false;
 
 function isMedia(u){let l=u.toLowerCase();return l.includes('.m3u8')||l.includes('.mp4')||l.includes('.webm')||l.includes('.mkv')||l.includes('.mov')}
-
 function showLoad(b){loader.style.display=b?'block':'none'}
 
 function play(url){
  if(!url) return;
  showLoad(true); err.style.display='none';
  if(hls){try{hls.destroy()}catch(e){} hls=null}
+ center.classList.add('hide');
+ document.getElementById('bgPoster').style.opacity='0';
+ document.getElementById('bgGradient').style.opacity='0';
  if(isMedia(url)){
   iframe.style.display='none'; iframe.src='about:blank';
   video.style.display='block';
@@ -96,7 +128,7 @@ function play(url){
    hls=new Hls({enableWorker:true});
    hls.loadSource(url); hls.attachMedia(video);
    hls.on(Hls.Events.MANIFEST_PARSED,()=>{showLoad(false);video.play().catch(()=>showLoad(false))});
-   hls.on(Hls.Events.ERROR,(ev,data)=>{if(data.fatal) nextServer()});
+   hls.on(Hls.Events.ERROR,(ev,d)=>{if(d.fatal) nextServer()});
   }else{
    video.src=url;
    video.oncanplay=()=>showLoad(false);
@@ -109,10 +141,9 @@ function play(url){
   iframe.onload=()=>showLoad(false);
   iframe.onerror=()=>nextServer();
   iframe.src=url;
-  setTimeout(()=>showLoad(false),3000);
+  setTimeout(()=>showLoad(false),2500);
  }
 }
-
 function nextServer(){
  if(cur+1<servers.length){
   cur++; document.querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',i===cur));
@@ -122,6 +153,12 @@ function nextServer(){
   document.getElementById('errMsg').innerText='Todos los servidores fallaron';
  }
 }
+function startPlay(){
+ if(servers.length===0) return;
+ started=true;
+ play(servers[cur]);
+ resetHide();
+}
 
 if(servers.length>0){
  servers.forEach((url,i)=>{
@@ -129,19 +166,26 @@ if(servers.length>0){
   b.className='btn'+(i==0?' active':'');
   b.innerText='SERVIDOR '+(i+1).toString().padStart(2,'0');
   b.onclick=()=>{
-   cur=i; document.querySelectorAll('.btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); play(url);
+   cur=i; document.querySelectorAll('.btn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+   if(started) play(url); else {center.classList.remove('hide');}
   };
-  topBar.appendChild(b);
+  serverBox.appendChild(b);
  });
- play(servers[0]);
+ // No autoplay inmediato, deja que vean el poster tipo Netflix
 }else{
  showLoad(false); err.style.display='block';
  document.getElementById('errMsg').innerText='Falta ?s1= LINK';
 }
 
 let ht=null;
-function resetHide(){topBar.classList.remove('hide');clearTimeout(ht);ht=setTimeout(()=>topBar.classList.add('hide'),4000)}
-document.addEventListener('mousemove',resetHide); document.addEventListener('click',resetHide); resetHide();
+function resetHide(){
+ if(!started) return;
+ topBar.classList.remove('hide');
+ clearTimeout(ht);
+ ht=setTimeout(()=>topBar.classList.add('hide'),3500);
+}
+document.addEventListener('mousemove',resetHide);
+document.addEventListener('click',resetHide);
 document.addEventListener('contextmenu',e=>e.preventDefault());
 </script>
 </body>
