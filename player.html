@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>XonaPlay V11.3 - Netflix Premium Fixed</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>XonaPlay V11.5 - Mobile Fixed</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Plus Jakarta Sans',Arial;touch-action:manipulation}
-#wrap{position:relative;width:100%;height:100vh;background:#000;overflow:hidden;cursor:none}
+#wrap{position:relative;width:100%;height:100dvh;background:#000;overflow:hidden;cursor:none;-webkit-tap-highlight-color:transparent}
 #wrap.show{cursor:default}
 #wrap.locked #topBar,#wrap.locked #bottom,#wrap.locked #skipControls,#wrap.locked #modeBadge{opacity:0!important;pointer-events:none!important}
 #bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(32px) brightness(.32);transform:scale(1.12)}
@@ -41,27 +41,28 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 .seekAnim svg{width:28px;height:28px;fill:#fff}
 .seekAnim b{color:#fff;font-size:13px;margin-top:2px;font-weight:800}
 @keyframes pop{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
-#bottom{position:absolute;bottom:0;left:0;right:0;z-index:95;padding:0 20px 14px 20px;background:linear-gradient(0deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.75) 55%,transparent 100%);transition:.4s}
+#bottom{position:absolute;bottom:0;left:0;right:0;z-index:95;padding:10px 14px 20px 14px;background:linear-gradient(0deg,rgba(0,0,0,.98) 0%,rgba(0,0,0,.85) 65%,transparent 100%);transition:.4s;min-height:68px}
 #bottom.hide{transform:translateY(110%);opacity:0}
-#progWrap{width:100%;height:20px;display:flex;align-items:center;cursor:pointer;position:relative}
+#progWrap{width:100%;height:20px;display:flex;align-items:center;cursor:pointer;position:relative;margin-bottom:6px}
 #progBg{width:100%;height:4px;background:rgba(255,255,255,.3);border-radius:99px}
 #progFill{height:100%;width:0%;background:#7c3aed;border-radius:99px}
-#ctrlRow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.cLeft,.cRight{display:flex;align-items:center;gap:8px}
-.cBtn{background:transparent;border:0;color:#fff;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}
-.cBtn svg{width:20px;height:20px;fill:#fff}
-#time{color:#e8e8e8;font-size:11px;font-weight:600;min-width:108px}
-#marcaPill{color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 12px;border-radius:20px}
+#ctrlRow{display:flex;justify-content:space-between;align-items:center;margin-top:4px;flex-wrap:nowrap}
+.cLeft,.cRight{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.cBtn{background:transparent;border:0;color:#fff;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:.2s;flex-shrink:0}
+.cBtn:hover{background:rgba(255,255,255,.14)}
+.cBtn svg{width:22px;height:22px;fill:#fff}
+#time{color:#e8e8e8;font-size:11px;font-weight:600;white-space:nowrap}
+#marcaPill{color:#fff;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(124,58,237,.12));border:1px solid rgba(124,58,237,.38);padding:5px 10px;border-radius:20px;white-space:nowrap}
 #volWrap{position:relative;display:flex;align-items:center}
 #volPopup{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);background:#1a1a28;border:1px solid #2a2a4a;border-radius:14px;padding:14px 12px;display:none;flex-direction:column;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.6);z-index:99}
 #volPopup.show{display:flex}
 #volSlider{writing-mode:bt-lr;-webkit-appearance:slider-vertical;width:6px;height:90px;background:rgba(255,255,255,.2);border-radius:99px;outline:none;appearance:slider-vertical}
 #volValue{color:#fff;font-size:10px;font-weight:800}
-#lockBtn{position:absolute;top:50%;left:18px;transform:translateY(-50%);z-index:96;width:40px;height:40px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px);transition:.3s}
+#lockBtn{position:absolute;top:50%;left:12px;transform:translateY(-50%);z-index:96;width:38px;height:38px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px);transition:.3s}
 #lockBtn.show{display:flex}
-#lockBtn svg{width:20px;height:20px;fill:#fff}
-#wrap.locked #lockBtn{display:flex!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:82px;height:82px;background:rgba(20,20,20,.88)!important;z-index:300!important;pointer-events:all!important;border:2px solid rgba(255,255,255,.35)!important;box-shadow:0 8px 32px rgba(0,0,0,.8)!important}
-#lockHint{position:absolute;top:calc(50% + 60px);left:50%;transform:translateX(-50%);z-index:301;color:#fff;background:rgba(0,0,0,.75);padding:7px 16px;border-radius:20px;font-size:11px;font-weight:700;display:none;white-space:nowrap;pointer-events:none}
+#lockBtn svg{width:18px;height:18px;fill:#fff}
+#wrap.locked #lockBtn{display:flex!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:84px;height:84px;background:rgba(20,20,20,.9)!important;z-index:300!important;pointer-events:all!important;border:2px solid rgba(255,255,255,.35)!important;box-shadow:0 8px 32px rgba(0,0,0,.8)!important}
+#lockHint{position:absolute;top:calc(50% + 62px);left:50%;transform:translateX(-50%);z-index:301;color:#fff;background:rgba(0,0,0,.8);padding:7px 16px;border-radius:20px;font-size:11px;font-weight:700;display:none;white-space:nowrap;pointer-events:none}
 #wrap.locked #lockHint{display:block}
 #epiBtn{display:none}
 #epiBtn.show{display:flex}
@@ -87,7 +88,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 .btnNext.secondary{background:rgba(255,255,255,.12);color:#fff}
 #resumeOverlay{position:absolute;inset:0;z-index:81;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;flex-direction:column}
 #resumeOverlay.show{display:flex}
-#serverMenu{position:absolute;bottom:64px;right:20px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:220px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;max-height:420px;overflow:auto}
+#serverMenu{position:absolute;bottom:64px;right:12px;z-index:98;background:#14141f;border:1px solid #2a2a4a;border-radius:14px;padding:8px;min-width:220px;box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;max-height:420px;overflow:auto}
 #serverMenu.show{display:block}
 .qOpt{width:100%;text-align:left;background:transparent;border:0;color:#a5a5c5;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between}
 .qOpt.active{background:#7c3aed;color:#fff}
@@ -99,11 +100,28 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #touchLeft{left:0;width:30%}
 #touchRight{right:0;width:30%}
 #touchCenter{left:30%;width:40%}
-@media(max-width:768px){
- #skipControls{gap:28px}
- .skipBtn{width:62px;height:62px}
- #playPauseCenter{width:68px;height:68px}
- #nextOverlay{width:calc(100% - 24px);right:12px;left:12px;bottom:78px}
+#fsBtn{background:rgba(255,255,255,.14)!important;border-radius:10px!important;border:1px solid rgba(255,255,255,.18)!important}
+@media (max-width:768px) and (orientation:portrait){
+ #wrap{height:100dvh}
+ #video,#player{object-fit:contain}
+ #bottom{padding:10px 10px calc(20px + env(safe-area-inset-bottom,0)) 10px}
+ #ctrlRow{gap:4px}
+ .cLeft{gap:4px}
+ .cRight{gap:4px}
+ .cRight .cBtn.hide-m{display:none}
+ #marcaPill{display:none}
+ #time{font-size:10px}
+ #topBar{padding:10px 12px}
+ #centerTitle{font-size:18px;padding:0 12px}
+ #skipControls{gap:14px}
+ .skipBtn{width:54px;height:54px}
+ #playPauseCenter{width:60px;height:60px}
+ #lockBtn{left:10px;width:36px;height:36px}
+ #modeBadge{top:54px;left:10px;font-size:8px}
+}
+@media (max-width:768px) and (orientation:landscape){
+ #bottom{padding:6px 12px 10px 12px}
+ #video{object-fit:contain}
 }
 </style>
 </head>
@@ -120,16 +138,15 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
   <div class="skipWrap"><div class="skipBtn" onclick="seekBy(10)"><svg viewBox="0 0 24 24"><path d="M11.5 3c-.83 0-1.5.67-1.5 1.5 0 .39.15.74.39 1.01.23.26.38.61.38.99 0 .83-.67 1.5-1.5 1.5H9c-2.76 0-5 2.24-5 5s2.24 5 5 5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm5 8l-4 4 4 4v-3c1.66 0 3-1.34 3-3s-1.34-3-3-3v-3z"/></svg></div><span class="skipLabel">10</span></div>
  </div>
  <div id="seekFeedback"><div class="seekAnim" id="seekAnimLeft"><svg viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6z"/></svg><b>-10s</b></div><div class="seekAnim" id="seekAnimRight"><svg viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6z"/></svg><b>+10s</b></div></div>
- <button id="lockBtn"></button>
- <div id="lockHint">Toca para desbloquear</div>
+ <button id="lockBtn" onclick="toggleLock()" ontouchend="toggleLock();event.preventDefault()"></button>
+ <div id="lockHint">Toca para desbloquear • ESC</div>
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
  <video id="video" playsinline webkit-playsinline preload="auto"></video>
- <div id="previewTip"><div id="previewBox"></div><b id="previewTime">00:00</b></div>
  <div id="epiDrawer"><div id="epiHead"><b id="epiHeadTitle">Episodios</b><button class="cBtn" onclick="document.getElementById('epiDrawer').classList.remove('show')">✕</button></div><div id="epiList"></div></div>
  <div id="resumeOverlay"><b>¿Continuar viendo?</b><p id="resumeDesc"></p><div style="display:flex;gap:10px;margin-top:16px"><button onclick="resumeYes()" style="background:#7c3aed;border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer;font-weight:800">SÍ, CONTINUAR</button><button onclick="resumeNo()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer">EMPEZAR DE CERO</button></div></div>
  <div id="nextOverlay"><b id="nextTitle">Siguiente en <span id="count">15</span>s</b><p id="nextName"></p><div id="nextBar"><div id="nextFill"></div></div><div id="nextActions"><button class="btnNext secondary" onclick="cancelNext()">CANCELAR</button><button class="btnNext primary" onclick="playNextNow()">VER AHORA</button></div></div>
  <div id="serverMenu"></div>
- <div id="bottom" class="hide">
+ <div id="bottom">
   <div id="progWrap"><div id="progBg"><div id="progFill"></div></div></div>
   <div id="ctrlRow">
    <div class="cLeft">
@@ -140,11 +157,11 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
    </div>
    <div class="cRight">
     <button class="cBtn" onclick="toggleLock()" title="Bloquear"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></button>
-    <button class="cBtn" onclick="togglePiP()"><svg viewBox="0 0 24 24"><path d="M19 7H9v10h10V7zM21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg></button>
-    <button class="cBtn" onclick="toggleCast()"><svg viewBox="0 0 24 24"><path d="M1 18v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm0-5v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm4.5 9.5c0 .55.45 1 1 1H21c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1H6.5c-.55 0-1 .45-1 1v12.5z"/></svg></button>
+    <button class="cBtn hide-m" onclick="togglePiP()" title="PiP"><svg viewBox="0 0 24 24"><path d="M19 7H9v10h10V7zM21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg></button>
+    <button class="cBtn hide-m" onclick="toggleCast()" title="TV"><svg viewBox="0 0 24 24"><path d="M1 18v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm0-5v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm4.5 9.5c0 .55.45 1 1 1H21c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1H6.5c-.55 0-1 .45-1 1v12.5z"/></svg></button>
     <span id="marcaPill"></span>
     <button class="cBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><circle cx="4.5" cy="12" r="1.6"/></svg></button>
-    <button class="cBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+    <button class="cBtn" id="fsBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
    </div>
   </div>
  </div>
@@ -168,8 +185,8 @@ document.getElementById('centerSub').innerText='Toca para reproducir • '+marca
 document.getElementById('modeBadge').innerText=isSeries?'MODO SERIE':'MODO PELÍCULA'
 if(isSeries)document.getElementById('epiBtn').classList.add('show')
 if(t&&e)document.getElementById('subTxt').innerText=`T${t} • E${e} • ${year}`;else document.getElementById('subTxt').innerText=year+' • HD'
-if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http')){document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`;document.getElementById('previewBox').style.backgroundImage=`url('${p}')`}}catch(e){}}
-const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),skipControls=document.getElementById('skipControls'),ppCenterIcon=document.getElementById('ppCenterIcon'),serverMenu=document.getElementById('serverMenu'),progWrap=document.getElementById('progWrap'),previewTip=document.getElementById('previewTip'),previewTime=document.getElementById('previewTime'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay'),resumeOverlay=document.getElementById('resumeOverlay'),lockBtn=document.getElementById('lockBtn'),seekFeedback=document.getElementById('seekFeedback'),seekAnimLeft=document.getElementById('seekAnimLeft'),seekAnimRight=document.getElementById('seekAnimRight'),volPopup=document.getElementById('volPopup'),volSlider=document.getElementById('volSlider'),volValue=document.getElementById('volValue'),volBtn=document.getElementById('volBtn')
+if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http')){document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`}}catch(e){}}
+const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),skipControls=document.getElementById('skipControls'),ppCenterIcon=document.getElementById('ppCenterIcon'),serverMenu=document.getElementById('serverMenu'),progWrap=document.getElementById('progWrap'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay'),resumeOverlay=document.getElementById('resumeOverlay'),lockBtn=document.getElementById('lockBtn'),seekFeedback=document.getElementById('seekFeedback'),seekAnimLeft=document.getElementById('seekAnimLeft'),seekAnimRight=document.getElementById('seekAnimRight'),volPopup=document.getElementById('volPopup'),volSlider=document.getElementById('volSlider'),volValue=document.getElementById('volValue'),volBtn=document.getElementById('volBtn')
 let hls=null,cur=0,started=false,hideT=null,countInt=null,currentQuality=-1,pendingTime=0,resumeKey='',resumeTime=0,isLocked=false,lastTap=0,lastTapX=0,seekFbT=null
 let episodes=[]
 try{if(epsRaw){let jsonStr=fromBase64Unicode(epsRaw);episodes=JSON.parse(jsonStr)}}catch(e){try{episodes=JSON.parse(atob(epsRaw))}catch(e2){episodes=[]}}
@@ -208,7 +225,7 @@ function start(){if(!servers.length && !episodes.length)return;started=true;let 
 function seekBy(d){if(isLocked)return;if(video.duration){video.currentTime=Math.max(0,Math.min(video.duration,video.currentTime+d));ui();showSeekFb(d)}}
 function showSeekFb(d){clearTimeout(seekFbT);seekFeedback.classList.add('show');seekAnimLeft.style.display=d<0?'flex':'none';seekAnimRight.style.display=d>0?'flex':'none';seekFbT=setTimeout(()=>seekFeedback.classList.remove('show'),700)}
 function toggle(){if(isLocked)return;if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}}
-function toggleFS(){if(!document.fullscreenElement)wrap.requestFullscreen();else document.exitFullscreen()}
+function toggleFS(){if(!document.fullscreenElement){wrap.requestFullscreen().catch(()=>{if(video.requestFullscreen)video.requestFullscreen()})}else document.exitFullscreen()}
 async function togglePiP(){try{if(document.pictureInPictureElement){await document.exitPictureInPicture()}else{if(video.readyState>0)await video.requestPictureInPicture()}}catch(e){}}
 async function toggleCast(){try{if(video.remote){await video.remote.prompt()}else{alert('Chromecast: misma WiFi')}}catch(e){}}
 function toggleSpeed(s){video.playbackRate=s;serverMenu.classList.remove('show')}
