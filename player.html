@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>XonaPlay V11.5 - Mobile Fixed</title>
+<title>XonaPlay V12 - TMDB Netflix Final</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -12,7 +12,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #wrap.show{cursor:default}
 #wrap.locked #topBar,#wrap.locked #bottom,#wrap.locked #skipControls,#wrap.locked #modeBadge{opacity:0!important;pointer-events:none!important}
 #bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(32px) brightness(.32);transform:scale(1.12)}
-#bgGradient{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,#000 18%,rgba(0,0,0,.65) 38%,transparent 68%,rgba(0,0,0,.7) 100%)}
+#bgGradient{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,#000 22%,rgba(0,0,0,.7) 40%,transparent 70%,rgba(0,0,0,.7) 100%)}
 #topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(180deg,rgba(0,0,0,.9),transparent);transition:.4s}
 #topBar.hide{transform:translateY(-110%);opacity:0}
 .logo{font-weight:800;font-size:17px;color:#fff;text-transform:uppercase;display:flex;gap:7px}
@@ -25,6 +25,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #centerTitle{color:#fff;font-size:23px;font-weight:800;max-width:540px;text-shadow:0 4px 24px rgba(0,0,0,.9)}
 #centerSub{color:rgba(255,255,255,.65);font-size:11px;margin-top:8px;font-weight:700}
 #modeBadge{position:absolute;top:64px;left:20px;z-index:90;background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.4);color:#a78bfa;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:800}
+#modeBadge.serie{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.4);color:#6ee7b7}
 #skipControls{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:65;display:none;align-items:center;gap:56px;transition:.3s}
 #skipControls.show{display:flex}
 .skipWrap{display:flex;flex-direction:column;align-items:center;gap:10px}
@@ -119,10 +120,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
  #lockBtn{left:10px;width:36px;height:36px}
  #modeBadge{top:54px;left:10px;font-size:8px}
 }
-@media (max-width:768px) and (orientation:landscape){
- #bottom{padding:6px 12px 10px 12px}
- #video{object-fit:contain}
-}
 </style>
 </head>
 <body>
@@ -143,8 +140,8 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
  <video id="video" playsinline webkit-playsinline preload="auto"></video>
  <div id="epiDrawer"><div id="epiHead"><b id="epiHeadTitle">Episodios</b><button class="cBtn" onclick="document.getElementById('epiDrawer').classList.remove('show')">✕</button></div><div id="epiList"></div></div>
- <div id="resumeOverlay"><b>¿Continuar viendo?</b><p id="resumeDesc"></p><div style="display:flex;gap:10px;margin-top:16px"><button onclick="resumeYes()" style="background:#7c3aed;border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer;font-weight:800">SÍ, CONTINUAR</button><button onclick="resumeNo()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer">EMPEZAR DE CERO</button></div></div>
- <div id="nextOverlay"><b id="nextTitle">Siguiente en <span id="count">15</span>s</b><p id="nextName"></p><div id="nextBar"><div id="nextFill"></div></div><div id="nextActions"><button class="btnNext secondary" onclick="cancelNext()">CANCELAR</button><button class="btnNext primary" onclick="playNextNow()">VER AHORA</button></div></div>
+ <div id="resumeOverlay"><b style="color:#fff;font-size:16px">¿Continuar viendo?</b><p id="resumeDesc" style="color:#aaa;font-size:12px;margin-top:8px"></p><div style="display:flex;gap:10px;margin-top:16px"><button onclick="resumeYes()" style="background:#7c3aed;border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer;font-weight:800">SÍ, CONTINUAR</button><button onclick="resumeNo()" style="background:rgba(255,255,255,.12);border:0;color:#fff;padding:10px 22px;border-radius:20px;cursor:pointer">EMPEZAR DE CERO</button></div></div>
+  <div id="nextOverlay"><b id="nextTitle" style="color:#fff;font-size:13px">Siguiente en <span id="count">15</span>s</b><p id="nextName" style="color:#aaa;font-size:11px;margin-top:4px"></p><div id="nextBar"><div id="nextFill"></div></div><div id="nextActions"><button class="btnNext secondary" onclick="cancelNext()">CANCELAR</button><button class="btnNext primary" onclick="playNextNow()">VER AHORA</button></div></div>
  <div id="serverMenu"></div>
  <div id="bottom">
   <div id="progWrap"><div id="progBg"><div id="progFill"></div></div></div>
@@ -157,8 +154,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
    </div>
    <div class="cRight">
     <button class="cBtn" onclick="toggleLock()" title="Bloquear"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></button>
-    <button class="cBtn hide-m" onclick="togglePiP()" title="PiP"><svg viewBox="0 0 24 24"><path d="M19 7H9v10h10V7zM21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg></button>
-    <button class="cBtn hide-m" onclick="toggleCast()" title="TV"><svg viewBox="0 0 24 24"><path d="M1 18v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm0-5v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H2c-.55 0-1 .45-1 1zm4.5 9.5c0 .55.45 1 1 1H21c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1H6.5c-.55 0-1 .45-1 1v12.5z"/></svg></button>
+    <button class="cBtn hide-m" onclick="togglePiP()" title="PiP"><svg viewBox="0 0 24 24"><path d="M19 7H9v10h10V7zM21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-.55-.45-1-1-1H6.5c-.55 0-1 .45-1 1v12.5z"/></svg></button>
     <span id="marcaPill"></span>
     <button class="cBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><circle cx="4.5" cy="12" r="1.6"/></svg></button>
     <button class="cBtn" id="fsBtn" onclick="toggleFS()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
@@ -181,16 +177,17 @@ document.getElementById('titleTxt').innerText=decTitle
 document.getElementById('centerTitle').innerText=decTitle
 document.getElementById('logoSpan').innerText=marca
 document.getElementById('marcaPill').innerText=marca
-document.getElementById('centerSub').innerText='Toca para reproducir • '+marca
-document.getElementById('modeBadge').innerText=isSeries?'MODO SERIE':'MODO PELÍCULA'
-if(isSeries)document.getElementById('epiBtn').classList.add('show')
-if(t&&e)document.getElementById('subTxt').innerText=`T${t} • E${e} • ${year}`;else document.getElementById('subTxt').innerText=year+' • HD'
+document.getElementById('centerSub').innerText='Toca para reproducir • '+marca+' V12 TMDB'
+document.getElementById('modeBadge').innerText=isSeries?'MODO SERIE • V12':'MODO PELÍCULA • V12'
+if(isSeries){document.getElementById('modeBadge').classList.add('serie');document.getElementById('epiBtn').classList.add('show')}
+if(t&&e)document.getElementById('subTxt').innerText=`T${t} • E${e} • ${year}`;else document.getElementById('subTxt').innerText=year+' • HD • V12'
 if(poster){try{let p=decodeURIComponent(poster);if(p.startsWith('http')){document.getElementById('bgPoster').style.backgroundImage=`url('${p}')`}}catch(e){}}
 const topBar=document.getElementById('topBar'),bottom=document.getElementById('bottom'),iframe=document.getElementById('player'),video=document.getElementById('video'),center=document.getElementById('center'),loader=document.getElementById('loader'),progFill=document.getElementById('progFill'),timeEl=document.getElementById('time'),ppBtn=document.getElementById('ppBtn'),wrap=document.getElementById('wrap'),skipControls=document.getElementById('skipControls'),ppCenterIcon=document.getElementById('ppCenterIcon'),serverMenu=document.getElementById('serverMenu'),progWrap=document.getElementById('progWrap'),epiDrawer=document.getElementById('epiDrawer'),epiList=document.getElementById('epiList'),nextOverlay=document.getElementById('nextOverlay'),resumeOverlay=document.getElementById('resumeOverlay'),lockBtn=document.getElementById('lockBtn'),seekFeedback=document.getElementById('seekFeedback'),seekAnimLeft=document.getElementById('seekAnimLeft'),seekAnimRight=document.getElementById('seekAnimRight'),volPopup=document.getElementById('volPopup'),volSlider=document.getElementById('volSlider'),volValue=document.getElementById('volValue'),volBtn=document.getElementById('volBtn')
 let hls=null,cur=0,started=false,hideT=null,countInt=null,currentQuality=-1,pendingTime=0,resumeKey='',resumeTime=0,isLocked=false,lastTap=0,lastTapX=0,seekFbT=null
 let episodes=[]
 try{if(epsRaw){let jsonStr=fromBase64Unicode(epsRaw);episodes=JSON.parse(jsonStr)}}catch(e){try{episodes=JSON.parse(atob(epsRaw))}catch(e2){episodes=[]}}
 if(isSeries && episodes.length===0 && servers.length>1){episodes=servers.map((u,i)=>({n:i+1,t:`Episodio ${i+1}`,url:u,d:'24 min'}))}
+if(e){let en=parseInt(e);if(!isNaN(en)&&en>0){cur=en-1;if(cur<0)cur=0}}
 function isMedia(u){return u.toLowerCase().includes('.m3u8')||u.toLowerCase().includes('.mp4')||u.toLowerCase().includes('.webm')}
 function getResumeKey(url){return 'xona_resume_'+btoa(url).slice(0,40)+'_'+btoa(decTitle).slice(0,20)}
 function showLoad(b){loader.style.display=b?'block':'none'}
@@ -227,10 +224,9 @@ function showSeekFb(d){clearTimeout(seekFbT);seekFeedback.classList.add('show');
 function toggle(){if(isLocked)return;if(video.style.display==='block'){if(video.paused)video.play();else video.pause()}}
 function toggleFS(){if(!document.fullscreenElement){wrap.requestFullscreen().catch(()=>{if(video.requestFullscreen)video.requestFullscreen()})}else document.exitFullscreen()}
 async function togglePiP(){try{if(document.pictureInPictureElement){await document.exitPictureInPicture()}else{if(video.readyState>0)await video.requestPictureInPicture()}}catch(e){}}
-async function toggleCast(){try{if(video.remote){await video.remote.prompt()}else{alert('Chromecast: misma WiFi')}}catch(e){}}
 function toggleSpeed(s){video.playbackRate=s;serverMenu.classList.remove('show')}
 function setQuality(h){if(!hls)return;if(h==='auto'){hls.currentLevel=-1;currentQuality=-1;serverMenu.classList.remove('show');return}let best=-1,bestH=0;for(let i=0;i<hls.levels.length;i++){let hh=hls.levels[i].height||0;if(hh<=h && hh>bestH){bestH=hh;best=i}}if(best==-1){let closest=0,min=9999;for(let i=0;i<hls.levels.length;i++){let d=Math.abs((hls.levels[i].height||0)-h);if(d<min){min=d;closest=i}}best=closest}hls.currentLevel=best;currentQuality=best;serverMenu.classList.remove('show')}
-function toggleMenu(){if(serverMenu.classList.contains('show')){serverMenu.classList.remove('show');return}let html='';if(hls && hls.levels && hls.levels.length>0){let levels=[...hls.levels].sort((a,b)=>b.height-a.height);let uniq=[...new Set(levels.map(l=>l.height))].sort((a,b)=>b-a);html+='<div class="menuTitle">CALIDAD REAL</div>';html+=`<button class="qOpt ${currentQuality==-1?'active':''}" onclick="setQuality('auto')"><span>Auto</span><span>${currentQuality==-1?'●':''}</span></button>`;uniq.forEach(hh=>{let active=hls.levels[currentQuality]?.height==hh;html+=`<button class="qOpt ${active?'active':''}" onclick="setQuality(${hh})"><span>${hh}p</span><span>${active?'●':''}</span></button>`})}html+='<div class="menuTitle">VELOCIDAD</div>';[0.5,0.75,1,1.25,1.5,1.75,2].forEach(sp=>{let act=video.playbackRate==sp;html+=`<button class="qOpt ${act?'active':''}" onclick="toggleSpeed(${sp})"><span>${sp}x</span><span>${act?'●':''}</span></button>`});serverMenu.innerHTML=html;serverMenu.classList.add('show')}
+function toggleMenu(){if(serverMenu.classList.contains('show')){serverMenu.classList.remove('show');return}let html='';if(hls && hls.levels && hls.levels.length>0){let levels=[...hls.levels].sort((a,b)=>b.height-a.height);let uniq=[...new Set(levels.map(l=>l.height))].sort((a,b)=>b-a);html+='<div class="menuTitle">CALIDAD REAL V12</div>';html+=`<button class="qOpt ${currentQuality==-1?'active':''}" onclick="setQuality('auto')"><span>Auto</span><span>${currentQuality==-1?'●':''}</span></button>`;uniq.forEach(hh=>{let active=hls.levels[currentQuality]?.height==hh;html+=`<button class="qOpt ${active?'active':''}" onclick="setQuality(${hh})"><span>${hh}p</span><span>${active?'●':''}</span></button>`})}html+='<div class="menuTitle">VELOCIDAD</div>';[0.5,0.75,1,1.25,1.5,1.75,2].forEach(sp=>{let act=video.playbackRate==sp;html+=`<button class="qOpt ${act?'active':''}" onclick="toggleSpeed(${sp})"><span>${sp}x</span><span>${act?'●':''}</span></button>`});serverMenu.innerHTML=html;serverMenu.classList.add('show')}
 function toggleEpi(){if(isLocked)return;epiDrawer.classList.toggle('show')}
 const lockedIcon = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="#fff"/></svg>';
 const unlockedIcon = '<svg viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2a2 2 0 0 0-2-2a2 2 0 0 0-2 2a2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2h1m-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3Z" fill="#fff"/></svg>';
