@@ -1,262 +1,75 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XonaPlay - Panel V4 PRO - VERSION PARA VENDER</title>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>XonaPlay V5.1 TMDB</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
-*{box-sizing:border-box;font-family:'Plus Jakarta Sans',system-ui}
-body{margin:0;background:#05050c;color:#fff;display:flex;height:100vh;overflow:hidden}
-.sidebar{width:270px;background:#080814;border-right:1px solid #1c1c33;padding:20px;display:flex;flex-direction:column}
-.logo{font-weight:800;font-size:22px;display:flex;gap:10px;align-items:center;margin-bottom:28px}
-.logo i{width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.menu{display:flex;flex-direction:column;gap:6px}
-.menu button{width:100%;text-align:left;background:transparent;border:0;color:#6b7280;padding:12px 14px;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer;display:flex;gap:10px;align-items:center;transition:.2s}
-.menu button.active{background:#1a1a33;color:#fff;border:1px solid #2a2a4a}
-.content{flex:1;overflow-y:auto;padding:28px;background:radial-gradient(600px at 20% 0%, #1a1033 0%, transparent 60%), #06060f}
-.section{display:none}.section.active{display:block}
-.card{background:rgba(14,14,34,0.9);border:1px solid #1e1e3a;border-radius:20px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.stat{background:linear-gradient(180deg,#12122a,#0e0e22);border:1px solid #1e1e3a;border-radius:16px;padding:18px;position:relative;overflow:hidden}
-.stat::after{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,#7c3aed22,transparent);border-radius:50%}
-.stat b{font-size:28px;display:block;margin-top:6px;letter-spacing:-1px}
-.stat small{font-size:11px;color:#10b981;font-weight:700}
-.label{font-size:10px;color:#7a7aa0;font-weight:800;letter-spacing:.9px;margin-bottom:7px;display:block;text-transform:uppercase}
-.input{width:100%;background:#15152e;border:1px solid #23234a;color:#fff;padding:12px 14px;border-radius:12px;outline:0;font-size:13px;transition:.2s}
-.input:focus{border-color:#7c3aed;background:#1b1b3a;box-shadow:0 0 0 3px rgba(124,58,237,.15)}
-.btn-main{background:linear-gradient(135deg,#7c3aed,#4f46e5);border:0;color:#fff;padding:13px 18px;border-radius:12px;font-weight:800;cursor:pointer;width:100%;letter-spacing:.3px;box-shadow:0 10px 24px rgba(124,58,237,.35);transition:.2s}
-.btn-main:hover{transform:translateY(-1px);filter:brightness(1.1)}
-.btn-sec{background:#1a1a33;border:1px solid #2a2a4a;color:#a5a5c5;padding:9px 13px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;transition:.2s}
-.btn-sec:hover{background:#24244a;color:#fff}
-.table{width:100%;border-collapse:collapse;margin-top:16px}
-.table th{font-size:10px;color:#5a5a7a;text-transform:uppercase;letter-spacing:.9px;text-align:left;padding:12px 10px}
-.table td{padding:14px 10px;border-top:1px solid #1a1a33;font-size:13px;vertical-align:middle}
-.iframe-box{background:#080812;border:1px dashed #3a3a6a;padding:14px;border-radius:12px;font-family:Consolas,monospace;font-size:11px;color:#a5a5ff;margin-top:10px;word-break:break-all;line-height:1.5;max-height:110px;overflow:auto}
-.poster-preview{width:88px;height:120px;background:#15152e;border:1px dashed #2a2a4a;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#5a5a7a;font-size:10px;text-align:center}
-.poster-preview img{width:100%;height:100%;object-fit:cover}
-.badge-ok{background:#10b98118;border:1px solid #10b98130;color:#10b981;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.notif{position:fixed;top:20px;right:20px;background:#10102a;border:1px solid #2a2a4a;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);display:none;z-index:9999}
-.bar{height:6px;background:#1a1a33;border-radius:10px;overflow:hidden;margin-top:10px}
-.bar span{display:block;height:100%;background:linear-gradient(90deg,#7c3aed,#4f46e5)}
-.search{width:260px}
-.epi-row{background:#15152e;border:1px solid #23234a;border-radius:10px;padding:10px;margin-top:8px;display:flex;gap:8px;align-items:center}
-@media(max-width:900px){.stat-grid{grid-template-columns:1fr 1fr}.sidebar{display:none}}
-</style>
-</head>
-<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
-<div id="notif" class="notif"></div>
-<div id="blockDev" style="position:fixed;inset:0;background:rgba(0,0,0,0.93);display:none;align-items:center;justify-content:center;z-index:99998;text-align:center"><div><h1 style="font-size:36px;color:#ff3b3b">🛡️ CONTENIDO PROTEGIDO</h1><p style="color:#777;margin-top:10px">Inspección bloqueada - XONAPLAY</p></div></div>
-<script>
-(function(){
-  document.addEventListener('contextmenu',e=>{e.preventDefault();return false;});
-  document.addEventListener('keydown',e=>{
-    const k=e.key.toLowerCase();
-    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))||(e.ctrlKey&&['u','s','p'].includes(k))){
-      e.preventDefault();const b=document.getElementById('blockDev');b.style.display='flex';setTimeout(()=>b.style.display='none',2500);return false;
-    }
-  });
-  let devAbierto=false;
-  setInterval(()=>{
-    const w=window.outerWidth-window.innerWidth;const h=window.outerHeight-window.innerHeight;
-    if(w>160||h>160){if(!devAbierto){devAbierto=true;document.getElementById('blockDev').style.display='flex';}}
-    else{devAbierto=false;const b=document.getElementById('blockDev');if(b)b.style.display='none';}
-  },700);
-  setInterval(()=>{try{console.clear();}catch(e){}},2000);
-})();
-</script>
-<div class="sidebar">
-<div class="logo"><i>▶</i> XONAPLAY</div>
-<div class="menu">
-<button class="active" onclick="show('dashboard',this)">📊 Dashboard</button>
-<button onclick="show('peliculas',this)">🎬 Películas</button>
-<button onclick="show('series',this)">📺 Series</button>
-<button onclick="show('config',this)">⚙️ Configuración</button>
-</div>
-<div style="margin-top:auto;padding-top:18px;border-top:1px solid #1c1c33">
-<div style="font-size:11px;color:#5a5a7a">Almacenamiento local</div>
-<div class="bar"><span id="storageBar" style="width:5%"></span></div>
-<div style="font-size:11px;color:#6b7280;margin-top:6px"><span id="storageTxt">0 películas guardadas</span></div>
-</div>
-</div>
+*{box-sizing:border-box;font-family:'Plus Jakarta Sans',system-ui}body{margin:0;background:#05050c;color:#fff;display:flex;height:100vh;overflow:hidden}.sidebar{width:270px;background:#080814;border-right:1px solid #1c1c33;padding:20px;display:flex;flex-direction:column;transition:.35s;z-index:200}.logo{font-weight:800;font-size:22px;display:flex;gap:10px;align-items:center;margin-bottom:28px}.logo i{width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px}.menu{display:flex;flex-direction:column;gap:6px}.menu button{width:100%;text-align:left;background:transparent;border:0;color:#6b7280;padding:12px 14px;border-radius:12px;font-weight:600;font-size:14px;cursor:pointer;display:flex;gap:10px;align-items:center}.menu button.active{background:#1a1a33;color:#fff;border:1px solid #2a2a4a}.content{flex:1;overflow-y:auto;padding:28px;background:radial-gradient(600px at 20% 0%, #1a1033 0%, transparent 60%), #06060f}.section{display:none}.section.active{display:block}.card{background:rgba(14,14,34,0.9);border:1px solid #1e1e3a;border-radius:20px;padding:20px}.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:linear-gradient(180deg,#12122a,#0e0e22);border:1px solid #1e1e3a;border-radius:16px;padding:18px}.stat b{font-size:28px;display:block;margin-top:6px}.label{font-size:10px;color:#7a7aa0;font-weight:800;letter-spacing:.9px;margin-bottom:7px;display:block;text-transform:uppercase}.input{width:100%;background:#15152e;border:1px solid #23234a;color:#fff;padding:12px 14px;border-radius:12px;outline:0;font-size:13px}.btn-main{background:linear-gradient(135deg,#7c3aed,#4f46e5);border:0;color:#fff;padding:13px 18px;border-radius:12px;font-weight:800;cursor:pointer;width:100%}.btn-sec{background:#1a1a33;border:1px solid #2a2a4a;color:#a5a5c5;padding:9px 13px;border-radius:10px;cursor:pointer;font-size:12px}.table{width:100%;border-collapse:collapse;margin-top:16px}.table th{font-size:10px;color:#5a5a7a;text-transform:uppercase;text-align:left;padding:12px 10px}.table td{padding:14px 10px;border-top:1px solid #1a1a33;font-size:13px}.iframe-box{background:#080812;border:1px dashed #3a3a6a;padding:14px;border-radius:12px;font-family:Consolas,monospace;font-size:11px;color:#a5a5ff;margin-top:10px;word-break:break-all;max-height:110px;overflow:auto}.poster-preview{width:88px;height:120px;background:#15152e;border:1px dashed #2a2a4a;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#5a5a7a;font-size:10px}.poster-preview img{width:100%;height:100%;object-fit:cover}.badge-ok{background:#10b98118;border:1px solid #10b98130;color:#10b981;padding:4px 10px;border-radius:20px;font-size:11px}.notif{position:fixed;top:20px;right:20px;background:#10102a;border:1px solid #2a2a4a;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;display:none;z-index:9999}.bar{height:6px;background:#1a1a33;border-radius:10px;overflow:hidden;margin-top:10px}.bar span{display:block;height:100%;background:linear-gradient(90deg,#7c3aed,#4f46e5)}.search{width:260px}.epi-row{background:#15152e;border:1px solid #23234a;border-radius:10px;padding:10px;margin-top:8px;display:flex;gap:8px;align-items:center}.hamb{display:none;position:fixed;top:14px;left:14px;z-index:300;width:42px;height:42px;background:#14142a;border:1px solid #2a2a4a;border-radius:12px;color:#fff;align-items:center;justify-content:center;cursor:pointer}.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150}.pagi{display:flex;gap:6px;margin-top:14px;justify-content:center}.pagi button{background:#15152e;border:1px solid #2a2a4a;color:#a5a5c5;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px}.pagi button.active{background:#7c3aed;color:#fff}.tmdb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px;max-height:420px;overflow:auto}.tmdb-card{background:#15152e;border:1px solid #2a2a4a;border-radius:12px;overflow:hidden;cursor:pointer}.tmdb-card img{width:100%;height:180px;object-fit:cover}.tmdb-card .info{padding:8px}.tmdb-card b{font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:900px){.stat-grid{grid-template-columns:1fr 1fr}.sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.overlay.show{display:block}.hamb{display:flex}.content{padding:70px 16px 20px 16px}}
+</style></head><body>
+<div id="notif" class="notif"></div><button class="hamb" onclick="toggleSidebar()">☰</button><div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar"><div class="logo"><i>▶</i> XONAPLAY <span style="background:#7c3aed;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px;margin-left:6px">V5.1 TMDB</span></div>
+<div class="menu"><button class="active" onclick="show('dashboard',this);closeSidebarMob()">📊 Dashboard</button><button onclick="show('peliculas',this);closeSidebarMob()">🎬 Películas</button><button onclick="show('series',this);closeSidebarMob()">📺 Series</button><button onclick="show('config',this);closeSidebarMob()">⚙️ Configuración</button></div>
+<div style="margin-top:auto;padding-top:18px;border-top:1px solid #1c1c33"><div style="font-size:11px;color:#5a5a7a">Almacenamiento</div><div class="bar"><span id="storageBar" style="width:5%"></span></div><div style="font-size:11px;color:#6b7280;margin-top:6px"><span id="storageTxt">0 pelis</span></div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn-sec" style="flex:1;font-size:10px" onclick="exportPelis()">Backup</button><button class="btn-sec" style="flex:1;font-size:10px" onclick="document.getElementById('importFile').click()">Restaurar</button><input type="file" id="importFile" style="display:none" accept=".json" onchange="importPelis(event)"></div></div></div>
 <div class="content">
-<div id="dashboard" class="section active">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-<div><h2 style="margin:0;font-size:28px">Dashboard XonaPlay</h2><p style="color:#7a7aa0;font-size:13px;margin:6px 0 0">Panel PRO para clientes - Funciona en cualquier dominio</p></div>
-<div style="display:flex;gap:8px"><input id="dashSearch" class="input search" placeholder="Buscar..." oninput="searchDash(this.value)"><button class="btn-sec" onclick="exportAll()">📥 Exportar</button></div>
-</div>
-<div class="stat-grid" style="margin-top:20px">
-<div class="stat"><span class="label">Total Películas</span><b id="statPelis">0</b><small id="statPelisSub">+0 hoy</small></div>
-<div class="stat"><span class="label">Reproducciones</span><b>45.2k</b><small>↑ 12.5% esta semana</small></div>
-<div class="stat"><span class="label">Series Activas</span><b id="statSeries">0</b><small>Gestión completa</small></div>
-<div class="stat"><span class="label">Embeds</span><b id="statEmbeds">0</b><small>Listos</small></div>
-</div>
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:18px">
-<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b>Últimas Películas</b><button class="btn-sec" onclick="show('peliculas',document.querySelectorAll('.menu button')[1])">Ver todas</button></div><table class="table" id="dashTable"><tr><th>Poster</th><th>Título</th><th>Año</th><th>Estado</th><th>Embed</th></tr></table></div>
-<div class="card"><b>Instrucciones para cliente</b><div style="font-size:12px;color:#9a9ac0;margin-top:10px;line-height:1.6">1. Ve a Configuración y pon tu link de GitHub Pages y tu Marca<br>2. Ejemplo: https://tu-usuario.github.io/xonaplay/player.html<br>3. La marca aparece arriba y abajo en el reproductor<br><span style="background:#7c3aed20;border:1px solid #7c3aed40;padding:6px 8px;border-radius:8px;display:block;color:#c4b5fd;margin-top:8px">El cliente debe subir player.html Netflix a su GitHub</span></div><div style="margin-top:12px"><span class="label">GitHub Pages del cliente</span><input id="dashGithub" class="input" value="https://mendez12.github.io/xonaplay/player.html" onchange="saveGithub()"></div><div style="margin-top:12px"><span class="label">Marca Actual (2 lugares)</span><input id="dashMarca" class="input" value="XONAPLAY" onchange="saveMarcaFromDash()"></div></div>
-</div>
-</div>
-<div id="peliculas" class="section">
-<h2>Gestión de Películas <span style="background:#7c3aed;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px">V4 PRO NETFLIX</span></h2>
-<div class="card" style="margin-top:12px">
-<div style="display:grid;grid-template-columns:96px 1fr 1fr;gap:16px">
-<div><span class="label">Poster</span><div class="poster-preview" id="posterPrev">Sin imagen</div><button class="btn-sec" style="margin-top:8px;width:100%" onclick="document.getElementById('p_poster').value='';updatePoster('')">Limpiar</button></div>
-<div><span class="label">Título *</span><input class="input" id="p_titulo" placeholder="Ej: Un Show Mas La Película"><span class="label" style="margin-top:10px">Año / Calidad</span><div style="display:flex;gap:8px"><input class="input" id="p_year" value="2024" style="width:80px"><select class="input" id="p_calidad"><option>1080p HD</option><option>720p</option><option>4K</option><option>CAM</option></select></div><span class="label" style="margin-top:10px">Idioma / Servidor</span><div style="display:flex;gap:8px"><select class="input" id="p_idioma"><option>Latino</option><option>Castellano</option><option>Subtitulado</option></select><input class="input" id="p_servidor" value="Server 1"></div></div>
-<div><span class="label">Servidor 01 *</span><input class="input" id="p_s1" placeholder="https://...m3u8 o mp4"><span class="label" style="margin-top:10px">Poster URL</span><input class="input" id="p_poster" placeholder="https://image.tmdb.org/..." oninput="updatePoster(this.value)"><span class="label" style="margin-top:10px">Servidor 02</span><input class="input" id="p_s2" placeholder="Backup opcional"></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-<div><span class="label">GitHub Pages (cliente pone el suyo)</span><input class="input" id="p_github" value="https://mendez12.github.io/xonaplay/player.html"></div>
-<div><span class="label">Descripción</span><input class="input" id="p_desc" placeholder="Opcional"></div>
-</div>
-<div style="display:flex;gap:10px;margin-top:14px"><button class="btn-main" style="flex:1" onclick="genPeli()">✦ GENERAR EMBED + GUARDAR + PREVISUALIZAR</button><button class="btn-sec" onclick="clearForm()">Limpiar</button></div>
-<div id="p_codeBox" style="display:none;margin-top:14px">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-<div><span class="label">✅ Embed Películas con Marca</span><div style="display:flex;gap:8px"><div id="p_code" class="iframe-box" style="flex:1"></div><button class="btn-main" style="width:90px" onclick="copiarEmbed()">COPIAR</button></div><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn-sec" onclick="copiarSoloLink()">Copiar solo link</button><button class="btn-sec" onclick="abrirEmbed()">Abrir en pestaña</button></div></div>
-<div><span class="label">Vista Previa Real</span><div style="background:#000;border-radius:14px;height:280px;border:1px solid #1e1e3a;position:relative;overflow:hidden" id="previewPlayer"><div style="height:100%;display:flex;align-items:center;justify-content:center;color:#4a4a6a">Video aquí</div></div></div>
-</div>
-</div>
-</div>
-<div class="card" style="margin-top:14px"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>Películas Guardadas (<span id="countP">0</span>)</b></div><div style="display:flex;gap:8px"><input id="searchPeli" class="input search" placeholder="Buscar..." oninput="filterPelis(this.value)"><button class="btn-sec" onclick="exportPelis()">Exportar</button><button class="btn-sec" style="color:#f87171" onclick="borrarTodo()">Borrar todo</button></div></div><table class="table" id="tablaP"><tr><th>Poster</th><th>Título</th><th>Año</th><th>Embed</th><th>Acción</th></tr></table></div>
-</div>
-<div id="series" class="section">
-<h2>Gestión de Series <span style="background:#10b981;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px">CON MARCA EDITABLE - AUTO-DETECT</span></h2>
-<p style="color:#7a7aa0;font-size:13px;margin:6px 0 14px">Cada episodio ahora incluye tu marca + Base64 de episodios para el player V9</p>
-<div style="display:grid;grid-template-columns:1fr 1.3fr;gap:14px">
-<div class="card">
-<b>Agregar Serie</b>
-<span class="label" style="margin-top:10px">Título *</span><input class="input" id="s_titulo" placeholder="Ej: Un Show Mas">
-<span class="label" style="margin-top:8px">Poster URL</span><input class="input" id="s_poster" placeholder="https://...">
-<span class="label" style="margin-top:8px">Año</span><input class="input" id="s_year" value="2024">
-<span class="label" style="margin-top:8px">Descripción</span><input class="input" id="s_desc" placeholder="Corta">
-<button class="btn-main" style="margin-top:12px" onclick="genSerie()">➕ Guardar Serie</button>
-<div style="margin-top:14px"><b>Series (<span id="countS">0</span>)</b></div>
-<table class="table" id="tablaS"><tr><th>Poster</th><th>Título</th><th>Temps</th><th>Acción</th></tr></table>
-</div>
-<div class="card">
-<b id="serieDetailTitle">Selecciona una serie</b>
-<div id="serieDetailBox" style="display:none">
-<div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:8px;margin-top:10px">
-<div><span class="label">Temp</span><input class="input" id="ep_temp" type="number" value="1"></div>
-<div><span class="label">Ep</span><input class="input" id="ep_num" type="number" value="1"></div>
-<div><span class="label">Título Ep</span><input class="input" id="ep_titulo" placeholder="Piloto"></div>
-</div>
-<span class="label" style="margin-top:8px">Link S1 (M3U8/MP4) *</span><input class="input" id="ep_s1" placeholder="https://...">
-<span class="label" style="margin-top:8px">Link S2 (opcional)</span><input class="input" id="ep_s2" placeholder="Backup">
-<button class="btn-main" style="margin-top:10px" onclick="addEpisodio()">➕ Agregar Episodio con Marca + Base64</button>
-<div id="epList" style="margin-top:12px;max-height:380px;overflow:auto"></div>
-<div style="margin-top:12px;background:#10102a;border:1px dashed #2a2a6a;padding:12px;border-radius:12px">
-<span class="label">✅ Embed generado - Con tu marca + Auto-Detect</span>
-<div id="serieEmbedBox" class="iframe-box"></div>
-<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-<button class="btn-sec" onclick="copiarSerieEmbed()">COPIAR EMBED</button>
-<button class="btn-sec" onclick="copiarSoloLinkSerie()">COPIAR SOLO LINK</button>
-<button class="btn-sec" onclick="abrirSerieEmbed()">ABRIR EN PESTAÑA</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="config" class="section"><h2>Configuración</h2><div class="card" style="margin-top:12px"><span class="label">GitHub Pages Link (cliente pone el suyo aquí)</span><input class="input" id="configGithub" value="https://mendez12.github.io/xonaplay/player.html" oninput="saveGithub()"><p style="font-size:11px;color:#6b7280;margin-top:8px">Cada cliente debe cambiar esto por su propio dominio. Ejemplo: https://cliente.github.io/xonaplay/player.html</p><div style="margin-top:16px;background:#15152e;border:1px solid #7c3aed44;border-radius:14px;padding:16px"><span class="label" style="color:#a78bfa">⭐ MARCA DE AGUA - EDITA LOS 2 LOGOS DEL REPRODUCTOR A LA VEZ</span><input class="input" value="XONAPLAY" id="marcaAgua" placeholder="Ej: Pelisplusgo Store" oninput="saveMarca()" style="margin-top:8px;border-color:#7c3aed88"><p style="font-size:11px;color:#c4b5fd;margin-top:8px;line-height:1.5">✅ Arriba a la izquierda: Logo ▶ TU MARCA<br>✅ Abajo a la derecha: Watermark TU MARCA • V4 PRO<br>Se guarda automático y se aplica a Películas y Series.</p></div></div></div>
-</div>
+<div id="dashboard" class="section active"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h2 style="margin:0;font-size:28px">Dashboard V5.1 TMDB</h2><p style="color:#7a7aa0;font-size:13px;margin:6px 0 0">Buscador automático TMDB - Cada cliente con su API Key</p></div><div style="display:flex;gap:8px"><input id="dashSearch" class="input search" placeholder="Buscar..." oninput="searchDash(this.value)"><button class="btn-sec" onclick="exportAll()">📥 Exportar</button></div></div>
+<div class="stat-grid" style="margin-top:20px"><div class="stat"><span class="label">Total Películas</span><b id="statPelis">0</b><small id="statPelisSub">+0</small></div><div class="stat"><span class="label">Reproducciones</span><b>45.2k</b><small>↑ 12.5%</small></div><div class="stat"><span class="label">Series Activas</span><b id="statSeries">0</b></div><div class="stat"><span class="label">Embeds</span><b id="statEmbeds">0</b></div></div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:18px"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b>Últimas Películas</b><button class="btn-sec" onclick="show('peliculas',document.querySelectorAll('.menu button')[1])">Ver todas</button></div><table class="table" id="dashTable"><tr><th>Poster</th><th>Título</th><th>Año</th><th>Estado</th><th>Embed</th></tr></table></div><div class="card"><b>TMDB Configurado ✅</b><div style="font-size:12px;color:#9a9ac0;margin-top:10px">Tu API Key está activa. Busca sin copiar posters.<br><span style="background:#10b98120;border:1px solid #10b98140;padding:6px 8px;border-radius:8px;display:block;color:#6ee7b7;margin-top:8px">V5.1: Cada cliente pone su API Key en Configuración -> TMDB API KEY. Se guarda solo en su navegador.</span></div><div style="margin-top:12px"><span class="label">GitHub Pages</span><input id="dashGithub" class="input" value="https://mendez12.github.io/xonaplay/player.html" onchange="saveGithub()"></div><div style="margin-top:12px"><span class="label">Marca</span><input id="dashMarca" class="input" value="XONAPLAY" onchange="saveMarcaFromDash()"></div></div></div></div>
+<div id="peliculas" class="section"><h2>Películas <span style="background:#7c3aed;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px">V5.1 TMDB AUTO</span></h2>
+<div class="card" style="margin-top:12px;border:1px solid #7c3aed66"><b style="color:#a78bfa">🔍 Buscador TMDB Automático - Nuevo en V5.1</b><div style="display:flex;gap:8px;margin-top:10px"><input class="input" id="tmdbSearchPeli" placeholder="Ej: Avengers, Batman..." onkeydown="if(event.key==='Enter')buscarTMDB('movie')"><button class="btn-main" style="width:160px" onclick="buscarTMDB('movie')">🔍 BUSCAR TMDB</button></div><div id="tmdbResultsPeli" class="tmdb-grid" style="display:none"></div><p style="font-size:11px;color:#6b7280;margin-top:8px">Click en una tarjeta para auto-rellenar título, poster, año y descripción.</p></div>
+<div class="card" style="margin-top:12px"><div style="display:grid;grid-template-columns:96px 1fr 1fr;gap:16px"><div><span class="label">Poster</span><div class="poster-preview" id="posterPrev">Sin imagen</div><button class="btn-sec" style="margin-top:8px;width:100%" onclick="document.getElementById('p_poster').value='';updatePoster('')">Limpiar</button></div><div><span class="label">Título *</span><input class="input" id="p_titulo" placeholder="Ej: Un Show Mas"><span class="label" style="margin-top:10px">Año / Calidad</span><div style="display:flex;gap:8px"><input class="input" id="p_year" value="2024" style="width:80px"><select class="input" id="p_calidad"><option>1080p HD</option><option>720p</option><option>4K</option><option>CAM</option></select></div><span class="label" style="margin-top:10px">Idioma / Servidor</span><div style="display:flex;gap:8px"><select class="input" id="p_idioma"><option>Latino</option><option>Castellano</option><option>Subtitulado</option></select><input class="input" id="p_servidor" value="Server 1"></div></div><div><span class="label">Servidor 01 *</span><input class="input" id="p_s1" placeholder="https://...m3u8 o mp4"><span class="label" style="margin-top:10px">Poster URL</span><input class="input" id="p_poster" placeholder="https://image.tmdb.org/..." oninput="updatePoster(this.value)"><span class="label" style="margin-top:10px">Servidor 02</span><input class="input" id="p_s2" placeholder="Backup opcional"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px"><div><span class="label">GitHub Pages</span><input class="input" id="p_github" value="https://mendez12.github.io/xonaplay/player.html"></div><div><span class="label">Descripción</span><input class="input" id="p_desc" placeholder="Se llena auto con TMDB"></div></div><div style="display:flex;gap:10px;margin-top:14px"><button class="btn-main" style="flex:1" onclick="genPeli()">✦ GENERAR EMBED + GUARDAR</button><button class="btn-sec" onclick="clearForm()">Limpiar</button></div><div id="p_codeBox" style="display:none;margin-top:14px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div><span class="label">✅ Embed</span><div style="display:flex;gap:8px"><div id="p_code" class="iframe-box" style="flex:1"></div><button class="btn-main" style="width:90px" onclick="copiarEmbed()">COPIAR</button></div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn-sec" onclick="copiarSoloLink()">Copiar link</button><button class="btn-sec" onclick="abrirEmbed()">Abrir</button></div></div><div><span class="label">Vista Previa</span><div style="background:#000;border-radius:14px;height:280px;border:1px solid #1e1e3a;overflow:hidden" id="previewPlayer"><div style="height:100%;display:flex;align-items:center;justify-content:center;color:#4a4a6a">Video aquí</div></div></div></div></div></div><div class="card" style="margin-top:14px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><b>Películas Guardadas (<span id="countP">0</span>)</b></div><div style="display:flex;gap:8px"><input id="searchPeli" class="input search" placeholder="Buscar..." oninput="filterPelis(this.value)"><button class="btn-sec" onclick="exportPelis()">Exportar</button><button class="btn-sec" style="color:#f87171" onclick="borrarTodo()">Borrar todo</button></div></div><table class="table" id="tablaP"><tr><th>Poster</th><th>Título</th><th>Año</th><th>Embed</th><th>Acción</th></tr></table><div id="pagiP" class="pagi"></div></div></div>
+<div id="series" class="section"><h2>Series <span style="background:#10b981;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px">V5.1 TMDB</span></h2><div class="card" style="border:1px solid #10b98166"><b style="color:#6ee7b7">🔍 Buscador TMDB Series - Nuevo</b><div style="display:flex;gap:8px;margin-top:10px"><input class="input" id="tmdbSearchSerie" placeholder="Ej: Breaking Bad..." onkeydown="if(event.key==='Enter')buscarTMDB('tv')"><button class="btn-main" style="width:160px;background:linear-gradient(135deg,#10b981,#059669)" onclick="buscarTMDB('tv')">🔍 BUSCAR SERIE</button></div><div id="tmdbResultsSerie" class="tmdb-grid" style="display:none"></div></div><div style="display:grid;grid-template-columns:1fr 1.3fr;gap:14px;margin-top:14px"><div class="card"><b>Agregar Serie</b><span class="label" style="margin-top:10px">Título *</span><input class="input" id="s_titulo" placeholder="Ej: Un Show Mas"><span class="label" style="margin-top:8px">Poster URL</span><input class="input" id="s_poster" placeholder="https://..."><span class="label" style="margin-top:8px">Año</span><input class="input" id="s_year" value="2024"><span class="label" style="margin-top:8px">Descripción</span><input class="input" id="s_desc" placeholder="Se llena auto"><button class="btn-main" style="margin-top:12px" onclick="genSerie()">➕ Guardar Serie</button><div style="margin-top:14px"><b>Series (<span id="countS">0</span>)</b></div><table class="table" id="tablaS"><tr><th>Poster</th><th>Título</th><th>Temps</th><th>Acción</th></tr></table></div><div class="card"><b id="serieDetailTitle">Selecciona una serie</b><div id="serieDetailBox" style="display:none"><div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:8px;margin-top:10px"><div><span class="label">Temp</span><input class="input" id="ep_temp" type="number" value="1"></div><div><span class="label">Ep</span><input class="input" id="ep_num" type="number" value="1"></div><div><span class="label">Título Ep</span><input class="input" id="ep_titulo" placeholder="Piloto"></div></div><span class="label" style="margin-top:8px">Link S1 *</span><input class="input" id="ep_s1" placeholder="https://..."><span class="label" style="margin-top:8px">Link S2</span><input class="input" id="ep_s2" placeholder="Backup"><button class="btn-main" style="margin-top:10px" onclick="addEpisodio()">➕ Agregar Episodio</button><div id="epList" style="margin-top:12px;max-height:380px;overflow:auto"></div><div style="margin-top:12px;background:#10102a;border:1px dashed #2a2a6a;padding:12px;border-radius:12px"><span class="label">✅ Embed generado</span><div id="serieEmbedBox" class="iframe-box"></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn-sec" onclick="copiarSerieEmbed()">COPIAR</button><button class="btn-sec" onclick="copiarSoloLinkSerie()">LINK</button><button class="btn-sec" onclick="abrirSerieEmbed()">ABRIR</button></div></div></div></div></div></div>
+<div id="config" class="section"><h2>Configuración V5.1 TMDB</h2><div class="card" style="margin-top:12px"><span class="label">GitHub Pages Link</span><input class="input" id="configGithub" value="https://mendez12.github.io/xonaplay/player.html" oninput="saveGithub()"><div style="margin-top:16px;background:#15152e;border:1px solid #7c3aed44;border-radius:14px;padding:16px"><span class="label" style="color:#a78bfa">⭐ MARCA DE AGUA - Cada cliente pone la suya</span><input class="input" value="XONAPLAY" id="marcaAgua" placeholder="Ej: Pelisplusgo Store" oninput="saveMarca()" style="margin-top:8px;border-color:#7c3aed88"><p style="font-size:11px;color:#c4b5fd;margin-top:8px">Se guarda solo en su navegador, no afecta a otros clientes.</p></div>
+<div style="margin-top:16px;background:#0e1a2e;border:1px solid #3b82f644;border-radius:14px;padding:16px">
+<span class="label" style="color:#60a5fa">🎬 TMDB API KEY - Cada cliente pone la suya aquí (V5.1 NUEVO)</span>
+<input class="input" id="tmdbKey" value="4a3f54f32cdb1f367552b023a3cf68ff" oninput="saveTMDBKey()" style="margin-top:8px;border-color:#3b82f688">
+<p style="font-size:11px;color:#93c5fd;margin-top:8px;line-height:1.6">
+✅ Tu key actual: 4a3f54f32cdb1f367552b023a3cf68ff - Ya configurada.<br>
+<b>Guardado por cliente:</b> Se guarda en localStorage del navegador de cada cliente.<br>
+Cada cliente pone su propia key gratis de themoviedb.org. Si no pone nada, usa esta por defecto.<br><br>
+<b>Como conseguir key:</b><br>
+1. themoviedb.org → Registrarse<br>
+2. Configuración → API → Solicitar API Key Developer<br>
+3. Copiar y pegar aquí → Se guarda automático
+</p>
+</div></div></div></div>
 <script>
-let peliculas=[];let currentIframe='';let currentDirectLink='';let hlsInstance=null;
-function loadData(){
- try{
-  peliculas=JSON.parse(localStorage.getItem('xonaplay_v3')||'[]');
-  let gh=localStorage.getItem('xonaplay_github');
-  if(gh){['p_github','dashGithub','configGithub'].forEach(id=>{let el=document.getElementById(id);if(el)el.value=gh;});}
-  let marca=localStorage.getItem('xonaplay_marca');
-  if(marca){
-   let m=document.getElementById('marcaAgua');if(m)m.value=marca;
-   let dm=document.getElementById('dashMarca');if(dm)dm.value=marca;
-  }
- }catch(e){peliculas=[];}
- renderAll();
-}
+const TMDB_KEY_DEFAULT="4a3f54f32cdb1f367552b023a3cf68ff";
+let peliculas=[];let currentIframe='';let currentDirectLink='';let hlsInstance=null;let peliPage=1;const perPage=15;
+function getTMDBKey(){return document.getElementById('tmdbKey')?.value.trim()||localStorage.getItem('tmdb_key')||TMDB_KEY_DEFAULT;}
+function saveTMDBKey(){let v=document.getElementById('tmdbKey').value.trim();localStorage.setItem('tmdb_key',v);toast('TMDB Key guardada ✓ Solo para este cliente, no afecta a otros');}
+function safeCopy(t){if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>toast('✓ Copiado')).catch(()=>fallbackCopy(t));}else{fallbackCopy(t);}}
+function fallbackCopy(t){let ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('✓ Copiado');}catch(e){prompt('Copia manual:',t);}document.body.removeChild(ta);}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebarMob(){if(window.innerWidth<=900){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}}
+async function buscarTMDB(tipo){let inputId=tipo==='movie'?'tmdbSearchPeli':'tmdbSearchSerie';let resultsId=tipo==='movie'?'tmdbResultsPeli':'tmdbResultsSerie';let q=document.getElementById(inputId).value.trim();if(!q){toast('Escribe algo');return;}let key=getTMDBKey();let box=document.getElementById(resultsId);box.style.display='grid';box.innerHTML='<div style="color:#7a7aa0;padding:20px;grid-column:1/-1;text-align:center">🔍 Buscando en TMDB con tu key...</div>';try{let url=`https://api.themoviedb.org/3/search/${tipo}?api_key=${key}&query=${encodeURIComponent(q)}&language=es-ES&page=1`;let res=await fetch(url);let data=await res.json();if(!data.results||data.results.length===0){box.innerHTML='<div style="color:#f87171;padding:20px;grid-column:1/-1;text-align:center">No se encontró nada con "'+q+'"</div>';return;}box.innerHTML='';data.results.slice(0,12).forEach(item=>{let titulo=item.title||item.name||'Sin título';let year=(item.release_date||item.first_air_date||'').substring(0,4)||'2024';let poster=item.poster_path?'https://image.tmdb.org/t/p/w300'+item.poster_path:'';let desc=item.overview||'';let div=document.createElement('div');div.className='tmdb-card';div.innerHTML=`<img src="${poster}" onerror="this.src='https://via.placeholder.com/130x180?text=No+Image'"><div class="info"><b>${titulo}</b><small>${year}</small></div>`;div.onclick=()=>{selectTMDBResult(titulo,poster,year,desc,tipo);};box.appendChild(div);});toast('✓ '+data.results.length+' resultados TMDB');}catch(e){box.innerHTML='<div style="color:#f87171;padding:20px">Error TMDB: '+e.message+'<br>Verifica API Key en Configuración. Tu key: '+key.substring(0,8)+'...</div>';}}
+function selectTMDBResult(titulo,poster,year,desc,tipo){if(tipo==='movie'){document.getElementById('p_titulo').value=titulo;document.getElementById('p_poster').value=poster;document.getElementById('p_year').value=year;document.getElementById('p_desc').value=desc.substring(0,160);updatePoster(poster);toast('✓ Película cargada: '+titulo);document.getElementById('tmdbResultsPeli').style.display='none';}else{document.getElementById('s_titulo').value=titulo;document.getElementById('s_poster').value=poster;document.getElementById('s_year').value=year;document.getElementById('s_desc').value=desc.substring(0,160);toast('✓ Serie cargada: '+titulo);document.getElementById('tmdbResultsSerie').style.display='none';}}
+function loadData(){try{peliculas=JSON.parse(localStorage.getItem('xonaplay_v3')||'[]');let gh=localStorage.getItem('xonaplay_github');if(gh){['p_github','dashGithub','configGithub'].forEach(id=>{let el=document.getElementById(id);if(el)el.value=gh;});}let marca=localStorage.getItem('xonaplay_marca');if(marca){let m=document.getElementById('marcaAgua');if(m)m.value=marca;let dm=document.getElementById('dashMarca');if(dm)dm.value=marca;}let tk=localStorage.getItem('tmdb_key');if(tk){let el=document.getElementById('tmdbKey');if(el)el.value=tk;}}catch(e){peliculas=[];}renderAll();}
 function saveData(){localStorage.setItem('xonaplay_v3',JSON.stringify(peliculas));localStorage.setItem('xonaplay_github',document.getElementById('p_github').value);renderAll();}
 function saveGithub(){let v=document.getElementById('configGithub').value||document.getElementById('dashGithub').value||document.getElementById('p_github').value;['p_github','dashGithub','configGithub'].forEach(id=>{let el=document.getElementById(id);if(el)el.value=v;});localStorage.setItem('xonaplay_github',v);toast('GitHub guardado ✓');}
-function saveMarca(){
- let v=document.getElementById('marcaAgua').value.trim()||'XONAPLAY';
- localStorage.setItem('xonaplay_marca',v);
- let dm=document.getElementById('dashMarca');if(dm)dm.value=v;
- toast('Marca guardada: '+v+' - Aparece arriba y abajo ✓');
-}
-function saveMarcaFromDash(){
- let v=document.getElementById('dashMarca').value.trim()||'XONAPLAY';
- localStorage.setItem('xonaplay_marca',v);
- let c=document.getElementById('marcaAgua');if(c)c.value=v;
- toast('Marca guardada: '+v+' ✓');
-}
+function saveMarca(){let v=document.getElementById('marcaAgua').value.trim()||'XONAPLAY';localStorage.setItem('xonaplay_marca',v);let dm=document.getElementById('dashMarca');if(dm)dm.value=v;toast('Marca guardada: '+v+' ✓');}
+function saveMarcaFromDash(){let v=document.getElementById('dashMarca').value.trim()||'XONAPLAY';localStorage.setItem('xonaplay_marca',v);let c=document.getElementById('marcaAgua');if(c)c.value=v;toast('Marca guardada: '+v+' ✓');}
 function getMarca(){return document.getElementById('marcaAgua')?.value.trim()||localStorage.getItem('xonaplay_marca')||'XONAPLAY';}
-function renderAll(){
- document.getElementById('countP').textContent=peliculas.length;
- document.getElementById('statPelis').textContent=peliculas.length;
- document.getElementById('statEmbeds').textContent=peliculas.length;
- document.getElementById('statSeries').textContent=series.length;
- document.getElementById('statPelisSub').textContent=peliculas.length>0?'+'+peliculas.length+' hoy':'+0 hoy';
- document.getElementById('storageTxt').textContent=peliculas.length+' películas';
- document.getElementById('storageBar').style.width=Math.min(5+peliculas.length*3,100)+'%';
- let dashTable=document.getElementById('dashTable');dashTable.innerHTML='<tr><th>Poster</th><th>Título</th><th>Año</th><th>Estado</th><th>Embed</th></tr>';
- let last=[...peliculas].reverse().slice(0,5);
- if(last.length===0){dashTable.innerHTML+='<tr><td colspan=5 style="color:#5a5a7a;padding:20px;text-align:center">No hay películas aún.</td></tr>';}
- else{last.forEach(p=>{dashTable.innerHTML+='<tr><td><img src="'+(p.poster||'')+'" style="width:32px;height:46px;object-fit:cover;border-radius:6px;background:#1a1a33"></td><td><b>'+esc(p.titulo)+'</b></td><td>'+esc(p.year)+'</td><td><span class="badge-ok">● Activo</span></td><td><button class="btn-sec" onclick="copiarDirecto(\''+btoa(p.iframe)+'\')">Copiar</button></td></tr>';});}
- let tabla=document.getElementById('tablaP');tabla.innerHTML='<tr><th>Poster</th><th>Título</th><th>Año</th><th>Embed</th><th>Acción</th></tr>';
- if(peliculas.length===0){tabla.innerHTML+='<tr><td colspan=5 style="color:#5a5a7a;padding:20px;text-align:center">No hay películas.</td></tr>';}
- else{[...peliculas].reverse().forEach((p,idx)=>{let real=peliculas.length-1-idx;tabla.innerHTML+='<tr><td><img src="'+(p.poster||'')+'" style="width:36px;height:52px;object-fit:cover;border-radius:6px;background:#1a1a33"></td><td><b>'+esc(p.titulo)+'</b><br><span style="font-size:10px;color:#6b7280">'+esc(p.year)+'</span></td><td>'+esc(p.year)+'</td><td><button class="btn-sec" onclick="copiarDirecto(\''+btoa(p.iframe)+'\')">Copiar</button></td><td><button class="btn-sec" onclick="editarPeli('+real+')">Editar</button> <button class="btn-sec" style="color:#f87171" onclick="borrarPeli('+real+')">X</button></td></tr>';});}
-}
+function renderAll(){document.getElementById('countP').textContent=peliculas.length;document.getElementById('statPelis').textContent=peliculas.length;document.getElementById('statEmbeds').textContent=peliculas.length;document.getElementById('statSeries').textContent=series.length;document.getElementById('statPelisSub').textContent=peliculas.length>0?'+'+peliculas.length+' hoy':'+0 hoy';document.getElementById('storageTxt').textContent=peliculas.length+' películas';document.getElementById('storageBar').style.width=Math.min(5+peliculas.length*3,100)+'%';let dashTable=document.getElementById('dashTable');dashTable.innerHTML='<tr><th>Poster</th><th>Título</th><th>Año</th><th>Estado</th><th>Embed</th></tr>';let last=[...peliculas].reverse().slice(0,5);if(last.length===0){dashTable.innerHTML+='<tr><td colspan=5 style="color:#5a5a7a;padding:20px;text-align:center">No hay películas aún.</td></tr>';}else{last.forEach(p=>{dashTable.innerHTML+='<tr><td><img src="'+(p.poster||'')+'" style="width:32px;height:46px;object-fit:cover;border-radius:6px;background:#1a1a33"></td><td><b>'+esc(p.titulo)+'</b></td><td>'+esc(p.year)+'</td><td><span class="badge-ok">● Activo</span></td><td><button class="btn-sec" onclick="copiarDirecto(\''+btoa(p.iframe)+'\')">Copiar</button></td></tr>';});}renderPelisTable();}
+function renderPelisTable(){let tabla=document.getElementById('tablaP');let pagi=document.getElementById('pagiP');let filtered=peliculas;let searchVal=document.getElementById('searchPeli').value.toLowerCase();if(searchVal)filtered=peliculas.filter(p=>(p.titulo+p.year).toLowerCase().includes(searchVal));let totalPages=Math.ceil(filtered.length/perPage)||1;if(peliPage>totalPages)peliPage=totalPages;let slice=filtered.slice().reverse().slice((peliPage-1)*perPage,peliPage*perPage);tabla.innerHTML='<tr><th>Poster</th><th>Título</th><th>Año</th><th>Embed</th><th>Acción</th></tr>';if(filtered.length===0){tabla.innerHTML+='<tr><td colspan=5 style="color:#5a5a7a;padding:20px;text-align:center">No hay películas.</td></tr>';pagi.innerHTML='';return;}slice.forEach((p)=>{let real=peliculas.indexOf(p);tabla.innerHTML+='<tr><td><img src="'+(p.poster||'')+'" style="width:36px;height:52px;object-fit:cover;border-radius:6px;background:#1a1a33"></td><td><b>'+esc(p.titulo)+'</b><br><span style="font-size:10px;color:#6b7280">'+esc(p.year)+'</span></td><td>'+esc(p.year)+'</td><td><button class="btn-sec" onclick="copiarDirecto(\''+btoa(p.iframe)+'\')">Copiar</button></td><td><button class="btn-sec" onclick="editarPeli('+real+')">Editar</button> <button class="btn-sec" style="color:#f87171" onclick="borrarPeli('+real+')">X</button></td></tr>';});let pgHtml='';for(let i=1;i<=totalPages;i++){pgHtml+='<button class="'+(i===peliPage?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';}pagi.innerHTML=pgHtml;}
+function goPage(n){peliPage=n;renderPelisTable();}
 function esc(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toBase64Unicode(str){return btoa(unescape(encodeURIComponent(str)))}
-function getEpsBase64ForTemp(tnum){
- if(selectedSerieIdx<0)return '';
- let s=series[selectedSerieIdx];
- let eps=(s.temporadas[tnum]||[]).map(ep=>({n:ep.num,t:ep.titulo,url:ep.s1,d:'24 min'}));
- try{return toBase64Unicode(JSON.stringify(eps));}catch(e){return btoa(JSON.stringify(eps));}
-}
+function getEpsBase64ForTemp(tnum){if(selectedSerieIdx<0)return '';let s=series[selectedSerieIdx];let eps=(s.temporadas[tnum]||[]).map(ep=>({n:ep.num,t:ep.titulo,url:ep.s1,d:'24 min'}));try{return toBase64Unicode(JSON.stringify(eps));}catch(e){return btoa(JSON.stringify(eps));}}
 function show(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
 function updatePoster(url){let prev=document.getElementById('posterPrev');if(!url){prev.textContent='Sin imagen';return;}prev.innerHTML='<img src="'+url+'" onerror="this.parentElement.textContent=\'Error\'">';}
 function clearForm(){['p_titulo','p_s1','p_s2','p_poster','p_desc'].forEach(i=>{let el=document.getElementById(i);if(el)el.value='';});updatePoster('');document.getElementById('p_codeBox').style.display='none';currentIframe='';}
-function genPeli(){
- let t=document.getElementById('p_titulo').value.trim();
- let s1=document.getElementById('p_s1').value.trim();
- let poster=document.getElementById('p_poster').value.trim();
- let s2=document.getElementById('p_s2').value.trim();
- let github=document.getElementById('p_github').value.trim();
- let year=document.getElementById('p_year').value.trim()||'2024';
- let calidad=document.getElementById('p_calidad').value;
- let idioma=document.getElementById('p_idioma').value;
- let servidor=document.getElementById('p_servidor').value||'Server 1';
- let desc=document.getElementById('p_desc').value.trim();
- if(!t){toast('Falta título');return;}
- if(!s1){toast('Falta link');return;}
- let marca=getMarca();
- let params='?titulo='+encodeURIComponent(t)+'&poster='+encodeURIComponent(poster)+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&year='+encodeURIComponent(year)+'&marca='+encodeURIComponent(marca)+'&tipo=pelicula';
- let directLink=github+params;
- currentDirectLink=directLink;
- currentIframe='<iframe src="'+directLink+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
- document.getElementById('p_code').textContent=currentIframe;
- document.getElementById('p_codeBox').style.display='block';
- let preview=document.getElementById('previewPlayer');
- preview.innerHTML='<video id="vprev" controls autoplay playsinline style="width:100%;height:100%;background:#000;border-radius:14px"></video>';
- let video=document.getElementById('vprev');
- try{if(s1.includes('.m3u8')){if(Hls.isSupported()){if(hlsInstance)hlsInstance.destroy();hlsInstance=new Hls();hlsInstance.loadSource(s1);hlsInstance.attachMedia(video);hlsInstance.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));}else if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=s1;}}else{video.src=s1;video.play().catch(()=>{});}video.onerror=()=>{if(s2){video.src=s2;}};}catch(e){video.src=s1;}
- let nueva={titulo:t,s1:s1,s2:s2,poster:poster,year:year,calidad:calidad,idioma:idioma,servidor:servidor,desc:desc,iframe:currentIframe,direct:directLink,fecha:new Date().toISOString()};
- peliculas.push(nueva);saveData();
- toast('✓ Película MODO PELÍCULA - Auto-detect');
- navigator.clipboard.writeText(currentIframe).catch(()=>{});
-}
-function copiarEmbed(){if(!currentIframe){toast('Primero genera');return;}navigator.clipboard.writeText(currentIframe);toast('✓ Embed copiado');}
-function copiarSoloLink(){if(!currentDirectLink){toast('Primero genera');return;}navigator.clipboard.writeText(currentDirectLink);toast('✓ Link copiado');}
+function genPeli(){let t=document.getElementById('p_titulo').value.trim();let s1=document.getElementById('p_s1').value.trim();let poster=document.getElementById('p_poster').value.trim();let s2=document.getElementById('p_s2').value.trim();let github=document.getElementById('p_github').value.trim();let year=document.getElementById('p_year').value.trim()||'2024';let calidad=document.getElementById('p_calidad').value;let idioma=document.getElementById('p_idioma').value;let servidor=document.getElementById('p_servidor').value||'Server 1';let desc=document.getElementById('p_desc').value.trim();if(!t){toast('Falta título');return;}if(!s1){toast('Falta link');return;}let marca=getMarca();let params='?titulo='+encodeURIComponent(t)+'&poster='+encodeURIComponent(poster)+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&year='+encodeURIComponent(year)+'&marca='+encodeURIComponent(marca)+'&tipo=pelicula';let directLink=github+params;currentDirectLink=directLink;currentIframe='<iframe src="'+directLink+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';document.getElementById('p_code').textContent=currentIframe;document.getElementById('p_codeBox').style.display='block';let preview=document.getElementById('previewPlayer');preview.innerHTML='<video id="vprev" controls autoplay playsinline style="width:100%;height:100%;background:#000;border-radius:14px"></video>';let video=document.getElementById('vprev');try{if(s1.includes('.m3u8')){if(Hls.isSupported()){if(hlsInstance)hlsInstance.destroy();hlsInstance=new Hls();hlsInstance.loadSource(s1);hlsInstance.attachMedia(video);hlsInstance.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));}else if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=s1;}}else{video.src=s1;video.play().catch(()=>{});}video.onerror=()=>{if(s2){video.src=s2;}};}catch(e){video.src=s1;}let nueva={titulo:t,s1:s1,s2:s2,poster:poster,year:year,calidad:calidad,idioma:idioma,servidor:servidor,desc:desc,iframe:currentIframe,direct:directLink,fecha:new Date().toISOString()};peliculas.push(nueva);saveData();toast('✓ Película guardada');safeCopy(currentIframe);}
+function copiarEmbed(){if(!currentIframe){toast('Primero genera');return;}safeCopy(currentIframe);}
+function copiarSoloLink(){if(!currentDirectLink){toast('Primero genera');return;}safeCopy(currentDirectLink);}
 function abrirEmbed(){if(!currentDirectLink){toast('Primero genera');return;}window.open(currentDirectLink,'_blank');}
-function copiarDirecto(b64){try{let iframe=atob(b64);navigator.clipboard.writeText(iframe);toast('✓ Embed copiado');}catch(e){}}
+function copiarDirecto(b64){try{let iframe=atob(b64);safeCopy(iframe);}catch(e){}}
 function borrarPeli(i){if(!confirm('¿Borrar?'))return;peliculas.splice(i,1);saveData();toast('Borrada');}
 function borrarTodo(){if(!confirm('¿Borrar todas?'))return;peliculas=[];saveData();toast('Todo borrado');clearForm();}
 function editarPeli(i){let p=peliculas[i];document.getElementById('p_titulo').value=p.titulo;document.getElementById('p_s1').value=p.s1;document.getElementById('p_s2').value=p.s2||'';document.getElementById('p_poster').value=p.poster||'';document.getElementById('p_year').value=p.year||'';document.getElementById('p_desc').value=p.desc||'';updatePoster(p.poster||'');show('peliculas',document.querySelectorAll('.menu button')[1]);}
-function filterPelis(q){let rows=document.getElementById('tablaP').rows;for(let i=1;i<rows.length;i++){rows[i].style.display=rows[i].textContent.toLowerCase().includes(q.toLowerCase())?'':'none';}}
+function filterPelis(q){peliPage=1;renderPelisTable();}
 function searchDash(q){filterPelis(q);show('peliculas',document.querySelectorAll('.menu button')[1]);document.getElementById('searchPeli').value=q;}
-function exportPelis(){let data=JSON.stringify(peliculas,null,2);let blob=new Blob([data],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='xonaplay_peliculas.json';a.click();}
-function exportAll(){exportPelis();toast('Exportado');}
+function exportPelis(){let data=JSON.stringify(peliculas,null,2);let blob=new Blob([data],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='xonaplay_backup_'+Date.now()+'.json';a.click();toast('Backup descargado');}
+function importPelis(ev){let file=ev.target.files[0];if(!file)return;let r=new FileReader();r.onload=function(e){try{let data=JSON.parse(e.target.result);if(Array.isArray(data)){peliculas=data;saveData();toast('✓ Restaurado '+data.length+' pelis');}else{toast('JSON inválido');}}catch(err){toast('Error al leer JSON');}};r.readAsText(file);}
+function exportAll(){exportPelis();}
 function toast(msg){let n=document.getElementById('notif');n.textContent=msg;n.style.display='block';setTimeout(()=>n.style.display='none',3000);}
 let series=[];let selectedSerieIdx=-1;let lastSerieEmbed='';let lastSerieDirect='';
 function loadSeriesUsuarios(){try{series=JSON.parse(localStorage.getItem('xonaplay_series')||'[]');}catch(e){series=[];}renderSeries();}
@@ -264,74 +77,14 @@ function saveSeries(){localStorage.setItem('xonaplay_series',JSON.stringify(seri
 function genSerie(){let t=document.getElementById('s_titulo').value.trim();if(!t){toast('Falta título');return;}let poster=document.getElementById('s_poster').value.trim();let year=document.getElementById('s_year').value.trim()||'2024';let desc=document.getElementById('s_desc').value.trim();series.push({id:Date.now(),titulo:t,poster:poster,year:year,desc:desc,temporadas:{}});document.getElementById('s_titulo').value='';document.getElementById('s_poster').value='';document.getElementById('s_desc').value='';saveSeries();toast('Serie guardada ✓');}
 function renderSeries(){document.getElementById('countS').textContent=series.length;let tabla=document.getElementById('tablaS');tabla.innerHTML='<tr><th>Poster</th><th>Título</th><th>Temps</th><th>Acción</th></tr>';if(series.length===0){tabla.innerHTML+='<tr><td colspan=4 style="color:#5a5a7a;padding:14px;text-align:center">No hay series</td></tr>';return;}[...series].reverse().forEach((s,revIdx)=>{let idx=series.length-1-revIdx;let temps=Object.keys(s.temporadas||{}).length;let totalEps=Object.values(s.temporadas||{}).reduce((a,b)=>a+(b.length||0),0);tabla.innerHTML+='<tr><td><img src="'+(s.poster||'')+'" style="width:32px;height:46px;object-fit:cover;border-radius:6px;background:#1a1a33"></td><td><b>'+esc(s.titulo)+'</b><br><span style="font-size:10px;color:#6b7280">'+esc(s.year)+' • '+totalEps+' eps</span></td><td>'+temps+'</td><td><button class="btn-sec" onclick="selectSerie('+idx+')">Gestionar</button> <button class="btn-sec" style="color:#f87171" onclick="borrarSerie('+idx+')">X</button></td></tr>';});}
 function selectSerie(idx){selectedSerieIdx=idx;let s=series[idx];document.getElementById('serieDetailTitle').textContent='Gestionando: '+s.titulo;document.getElementById('serieDetailBox').style.display='block';renderEpisodios();}
-function addEpisodio(){
- if(selectedSerieIdx<0){toast('Selecciona serie');return;}
- let tnum=parseInt(document.getElementById('ep_temp').value)||1;
- let epnum=parseInt(document.getElementById('ep_num').value)||1;
- let eptit=document.getElementById('ep_titulo').value.trim()||'Episodio '+epnum;
- let s1=document.getElementById('ep_s1').value.trim();
- let s2=document.getElementById('ep_s2').value.trim();
- if(!s1){toast('Falta link');return;}
- let s=series[selectedSerieIdx];
- if(!s.temporadas[tnum])s.temporadas[tnum]=[];
- let ep={num:epnum,titulo:eptit,s1:s1,s2:s2,fecha:Date.now()};
- let existing=s.temporadas[tnum].findIndex(e=>e.num===epnum);
- if(existing>=0)s.temporadas[tnum][existing]=ep;else s.temporadas[tnum].push(ep);
- s.temporadas[tnum].sort((a,b)=>a.num-b.num);
- saveSeries();renderEpisodios();
- let github=document.getElementById('p_github').value;
- let marca=getMarca();
- let epsB64=getEpsBase64ForTemp(tnum);
- let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+eptit)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);
- lastSerieDirect=github+params;
- lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
- document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;
- document.getElementById('ep_num').value=epnum+1;
- document.getElementById('ep_s1').value='';
- toast('Episodio guardado con Base64 + Auto-Detect ✓');
-}
-function renderEpisodios(){
-  if(selectedSerieIdx<0)return;
-  let s=series[selectedSerieIdx];
-  let box=document.getElementById('epList');box.innerHTML='';
-  let temps=Object.keys(s.temporadas).sort((a,b)=>a-b);
-  if(temps.length===0){box.innerHTML='<div style="color:#5a5a7a;font-size:12px;padding:10px">No hay episodios.</div>';return;}
-  temps.forEach(tnum=>{
-    let eps=s.temporadas[tnum];
-    box.innerHTML+='<div style="margin-top:12px"><b style="font-size:13px;color:#a78bfa">Temporada '+tnum+' ('+eps.length+')</b></div>';
-    eps.forEach(ep=>{
-      box.innerHTML+='<div class="epi-row"><b style="font-size:11px;background:#1a1a33;padding:4px 8px;border-radius:6px">E'+ep.num+'</b><div style="flex:1"><b style="font-size:12px">'+esc(ep.titulo)+'</b><br><span style="font-size:10px;color:#6b7280">'+esc(ep.s1).substring(0,28)+'...</span></div><button class="btn-sec" onclick="playSerieEp('+tnum+','+ep.num+')">Embed</button><button class="btn-sec" onclick="copiarIframeDirecto('+tnum+','+ep.num+')">Copiar Iframe</button><button class="btn-sec" style="color:#f87171" onclick="borrarEp('+tnum+','+ep.num+')">X</button></div>';
-    });
-  });
-}
-function playSerieEp(tnum,epnum){
-  let s=series[selectedSerieIdx];let ep=(s.temporadas[tnum]||[]).find(e=>e.num===epnum);if(!ep)return;
-  let github=document.getElementById('p_github').value;
-  let marca=getMarca();
-  let epsB64=getEpsBase64ForTemp(tnum);
-  let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);
-  lastSerieDirect=github+params;
-  lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
-  document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;
-  toast('Embed SERIE con Base64 - Auto-Detect');
-}
-function copiarIframeDirecto(tnum,epnum){
-  let s=series[selectedSerieIdx];let ep=(s.temporadas[tnum]||[]).find(e=>e.num===epnum);if(!ep){toast('No encontrado');return;}
-  let github=document.getElementById('p_github').value;
-  let marca=getMarca();
-  let epsB64=getEpsBase64ForTemp(tnum);
-  let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);
-  lastSerieDirect=github+params;
-  lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';
-  document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;
-  navigator.clipboard.writeText(lastSerieEmbed).then(()=>toast('✓ Iframe SERIE copiado con Base64')).catch(()=>{});
-}
-function copiarSerieEmbed(){let code=lastSerieEmbed||document.getElementById('serieEmbedBox').textContent;if(!code||!code.trim()){toast('Dale a Embed primero');return;}navigator.clipboard.writeText(code);toast('✓ Embed copiado');}
-function copiarSoloLinkSerie(){if(!lastSerieDirect){toast('Dale a Embed primero');return;}navigator.clipboard.writeText(lastSerieDirect);toast('✓ Solo link copiado');}
+function addEpisodio(){if(selectedSerieIdx<0){toast('Selecciona serie');return;}let tnum=parseInt(document.getElementById('ep_temp').value)||1;let epnum=parseInt(document.getElementById('ep_num').value)||1;let eptit=document.getElementById('ep_titulo').value.trim()||'Episodio '+epnum;let s1=document.getElementById('ep_s1').value.trim();let s2=document.getElementById('ep_s2').value.trim();if(!s1){toast('Falta link');return;}let s=series[selectedSerieIdx];if(!s.temporadas[tnum])s.temporadas[tnum]=[];let ep={num:epnum,titulo:eptit,s1:s1,s2:s2,fecha:Date.now()};let existing=s.temporadas[tnum].findIndex(e=>e.num===epnum);if(existing>=0)s.temporadas[tnum][existing]=ep;else s.temporadas[tnum].push(ep);s.temporadas[tnum].sort((a,b)=>a.num-b.num);saveSeries();renderEpisodios();let github=document.getElementById('p_github').value;let marca=getMarca();let epsB64=getEpsBase64ForTemp(tnum);let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+eptit)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(s1)+'&s2='+encodeURIComponent(s2)+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);lastSerieDirect=github+params;lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;document.getElementById('ep_num').value=epnum+1;document.getElementById('ep_s1').value='';toast('Episodio guardado ✓');}
+function renderEpisodios(){if(selectedSerieIdx<0)return;let s=series[selectedSerieIdx];let box=document.getElementById('epList');box.innerHTML='';let temps=Object.keys(s.temporadas).sort((a,b)=>a-b);if(temps.length===0){box.innerHTML='<div style="color:#5a5a7a;font-size:12px;padding:10px">No hay episodios.</div>';return;}temps.forEach(tnum=>{let eps=s.temporadas[tnum];box.innerHTML+='<div style="margin-top:12px"><b style="font-size:13px;color:#a78bfa">Temporada '+tnum+' ('+eps.length+')</b></div>';eps.forEach(ep=>{box.innerHTML+='<div class="epi-row"><b style="font-size:11px;background:#1a1a33;padding:4px 8px;border-radius:6px">E'+ep.num+'</b><div style="flex:1"><b style="font-size:12px">'+esc(ep.titulo)+'</b><br><span style="font-size:10px;color:#6b7280">'+esc(ep.s1).substring(0,28)+'...</span></div><button class="btn-sec" onclick="playSerieEp('+tnum+','+ep.num+')">Embed</button><button class="btn-sec" onclick="copiarIframeDirecto('+tnum+','+ep.num+')">Copiar</button><button class="btn-sec" style="color:#f87171" onclick="borrarEp('+tnum+','+ep.num+')">X</button></div>';});});}
+function playSerieEp(tnum,epnum){let s=series[selectedSerieIdx];let ep=(s.temporadas[tnum]||[]).find(e=>e.num===epnum);if(!ep)return;let github=document.getElementById('p_github').value;let marca=getMarca();let epsB64=getEpsBase64ForTemp(tnum);let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);lastSerieDirect=github+params;lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;toast('Embed SERIE listo');}
+function copiarIframeDirecto(tnum,epnum){let s=series[selectedSerieIdx];let ep=(s.temporadas[tnum]||[]).find(e=>e.num===epnum);if(!ep){toast('No encontrado');return;}let github=document.getElementById('p_github').value;let marca=getMarca();let epsB64=getEpsBase64ForTemp(tnum);let params='?serie='+encodeURIComponent(s.titulo)+'&t='+tnum+'&e='+epnum+'&titulo='+encodeURIComponent(s.titulo+' - '+ep.titulo)+'&poster='+encodeURIComponent(s.poster||'')+'&s1='+encodeURIComponent(ep.s1)+'&s2='+encodeURIComponent(ep.s2||'')+'&marca='+encodeURIComponent(marca)+'&tipo=serie&eps='+encodeURIComponent(epsB64);lastSerieDirect=github+params;lastSerieEmbed='<iframe src="'+lastSerieDirect+'" width="100%" height="460" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="border-radius:18px;background:#000"></iframe>';document.getElementById('serieEmbedBox').textContent=lastSerieEmbed;safeCopy(lastSerieEmbed);}
+function copiarSerieEmbed(){let code=lastSerieEmbed||document.getElementById('serieEmbedBox').textContent;if(!code||!code.trim()){toast('Dale a Embed primero');return;}safeCopy(code);}
+function copiarSoloLinkSerie(){if(!lastSerieDirect){toast('Dale a Embed primero');return;}safeCopy(lastSerieDirect);}
 function abrirSerieEmbed(){if(!lastSerieDirect){toast('Dale a Embed primero');return;}window.open(lastSerieDirect,'_blank');}
 function borrarSerie(idx){if(!confirm('¿Borrar serie?'))return;series.splice(idx,1);if(selectedSerieIdx===idx){selectedSerieIdx=-1;document.getElementById('serieDetailBox').style.display='none';}saveSeries();toast('Borrada');}
 function borrarEp(tnum,epnum){if(!confirm('¿Borrar ep?'))return;let s=series[selectedSerieIdx];s.temporadas[tnum]=s.temporadas[tnum].filter(e=>e.num!==epnum);if(s.temporadas[tnum].length===0)delete s.temporadas[tnum];saveSeries();renderEpisodios();toast('Borrado');}
 loadData();loadSeriesUsuarios();
-</script>
-</body>
-</html>
+</script></body></html>
