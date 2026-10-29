@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>XonaPlay V11.2 - Netflix Premium Fixed</title>
+<title>XonaPlay V11.3 - Netflix Premium Fixed</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -10,8 +10,8 @@
 html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Plus Jakarta Sans',Arial;touch-action:manipulation}
 #wrap{position:relative;width:100%;height:100vh;background:#000;overflow:hidden;cursor:none}
 #wrap.show{cursor:default}
-#wrap.locked #topBar,#wrap.locked #bottom,#wrap.locked #skipControls,#wrap.locked #modeBadge{opacity:0;pointer-events:none}
-#bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(32px) brightness(.32);transform:scale(1.12);transition:.8s}
+#wrap.locked #topBar,#wrap.locked #bottom,#wrap.locked #skipControls,#wrap.locked #modeBadge{opacity:0!important;pointer-events:none!important}
+#bgPoster{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;filter:blur(32px) brightness(.32);transform:scale(1.12)}
 #bgGradient{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,#000 18%,rgba(0,0,0,.65) 38%,transparent 68%,rgba(0,0,0,.7) 100%)}
 #topBar{position:absolute;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(180deg,rgba(0,0,0,.9),transparent);transition:.4s}
 #topBar.hide{transform:translateY(-110%);opacity:0}
@@ -28,12 +28,12 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #skipControls{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:65;display:none;align-items:center;gap:56px;transition:.3s}
 #skipControls.show{display:flex}
 .skipWrap{display:flex;flex-direction:column;align-items:center;gap:10px}
-.skipBtn{width:72px;height:72px;background:rgba(255,255,255,.10);border:1.5px solid rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(12px);transition:.2s;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.skipBtn:hover{background:rgba(255,255,255,.18);transform:scale(1.08)}
-.skipLabel{color:#fff;font-size:12px;font-weight:800;letter-spacing:1.2px;background:rgba(0,0,0,.6);padding:3px 8px;border-radius:10px}
-#playPauseCenter{width:84px;height:84px;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.28);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(14px);transition:.2s}
+.skipBtn{width:72px;height:72px;background:rgba(255,255,255,.10);border:1.5px solid rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(12px);transition:.2s}
+.skipBtn svg{width:30px;height:30px;fill:#fff}
+.skipLabel{color:#fff;font-size:12px;font-weight:800;background:rgba(0,0,0,.6);padding:3px 8px;border-radius:10px}
+#playPauseCenter{width:84px;height:84px;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.28);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(14px)}
 #playPauseCenter svg{width:36px;height:36px;fill:#fff}
-#player,#video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:10}
+#player,#video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:10;object-fit:contain}
 #video{display:none}
 #seekFeedback{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:66;display:none;pointer-events:none}
 #seekFeedback.show{display:flex;gap:60px;animation:pop .35s ease}
@@ -57,10 +57,12 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #volPopup.show{display:flex}
 #volSlider{writing-mode:bt-lr;-webkit-appearance:slider-vertical;width:6px;height:90px;background:rgba(255,255,255,.2);border-radius:99px;outline:none;appearance:slider-vertical}
 #volValue{color:#fff;font-size:10px;font-weight:800}
-#lockBtn{position:absolute;top:50%;left:22px;transform:translateY(-50%);z-index:96;width:44px;height:44px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px);transition:.3s}
+#lockBtn{position:absolute;top:50%;left:18px;transform:translateY(-50%);z-index:96;width:40px;height:40px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px);transition:.3s}
 #lockBtn.show{display:flex}
-#lockBtn svg{width:22px;height:22px;fill:#fff}
-#wrap.locked #lockBtn{display:flex!important;left:50%;top:50%;width:78px;height:78px;background:rgba(0,0,0,.85);z-index:250;pointer-events:all!important;border:2px solid rgba(255,255,255,.35);box-shadow:0 8px 32px rgba(0,0,0,.7)}
+#lockBtn svg{width:20px;height:20px;fill:#fff}
+#wrap.locked #lockBtn{display:flex!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:82px;height:82px;background:rgba(20,20,20,.88)!important;z-index:300!important;pointer-events:all!important;border:2px solid rgba(255,255,255,.35)!important;box-shadow:0 8px 32px rgba(0,0,0,.8)!important}
+#lockHint{position:absolute;top:calc(50% + 60px);left:50%;transform:translateX(-50%);z-index:301;color:#fff;background:rgba(0,0,0,.75);padding:7px 16px;border-radius:20px;font-size:11px;font-weight:700;display:none;white-space:nowrap;pointer-events:none}
+#wrap.locked #lockHint{display:block}
 #epiBtn{display:none}
 #epiBtn.show{display:flex}
 #epiDrawer{position:absolute;top:0;right:0;bottom:0;width:340px;z-index:110;background:#0f0f17;border-left:1px solid #23233a;transform:translateX(100%);transition:.35s;display:flex;flex-direction:column}
@@ -72,6 +74,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 .epiItem:hover{background:#1a1a2a}
 .epiItem.active{background:#7c3aed}
 .epiNum{width:28px;height:28px;background:#22223a;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:11px;font-weight:800}
+.epiItem.active .epiNum{background:rgba(255,255,255,.2);color:#fff}
 .epiInfo b{color:#fff;font-size:12px;display:block;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .epiInfo small{color:#888;font-size:10px}
 #nextOverlay{position:absolute;bottom:84px;right:20px;z-index:80;background:#181828;border:1px solid #2a2a4a;border-radius:16px;padding:14px 16px;width:300px;display:none;flex-direction:column;box-shadow:0 12px 32px rgba(0,0,0,.7)}
@@ -96,8 +99,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
 #touchLeft{left:0;width:30%}
 #touchRight{right:0;width:30%}
 #touchCenter{left:30%;width:40%}
-#lockHint{position:absolute;top:calc(50% + 54px);left:50%;transform:translateX(-50%);z-index:251;color:#fff;background:rgba(0,0,0,.7);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;display:none}
-#wrap.locked #lockHint{display:block}
 @media(max-width:768px){
  #skipControls{gap:28px}
  .skipBtn{width:62px;height:62px}
@@ -119,7 +120,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Pl
   <div class="skipWrap"><div class="skipBtn" onclick="seekBy(10)"><svg viewBox="0 0 24 24"><path d="M11.5 3c-.83 0-1.5.67-1.5 1.5 0 .39.15.74.39 1.01.23.26.38.61.38.99 0 .83-.67 1.5-1.5 1.5H9c-2.76 0-5 2.24-5 5s2.24 5 5 5c4.97 0 9-4.03 9-9s-4.03-9-9-9zm5 8l-4 4 4 4v-3c1.66 0 3-1.34 3-3s-1.34-3-3-3v-3z"/></svg></div><span class="skipLabel">10</span></div>
  </div>
  <div id="seekFeedback"><div class="seekAnim" id="seekAnimLeft"><svg viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6z"/></svg><b>-10s</b></div><div class="seekAnim" id="seekAnimRight"><svg viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6z"/></svg><b>+10s</b></div></div>
- <button id="lockBtn" onclick="toggleLock()" title="Bloquear"></button>
+ <button id="lockBtn"></button>
  <div id="lockHint">Toca para desbloquear</div>
  <iframe id="player" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
  <video id="video" playsinline webkit-playsinline preload="auto"></video>
@@ -218,7 +219,11 @@ const lockedIcon = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5
 const unlockedIcon = '<svg viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2a2 2 0 0 0-2-2a2 2 0 0 0-2 2a2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2h1m-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3Z" fill="#fff"/></svg>';
 function setLockIcon(){lockBtn.innerHTML = isLocked ? unlockedIcon : lockedIcon;}
 setLockIcon();
-function toggleLock(){isLocked=!isLocked;setLockIcon();if(isLocked){wrap.classList.add('locked');lockBtn.classList.add('show');volPopup.classList.remove('show');serverMenu.classList.remove('show');epiDrawer.classList.remove('show');topBar.classList.add('hide');bottom.classList.add('hide');skipControls.classList.remove('show');}else{wrap.classList.remove('locked');lockBtn.classList.remove('show');ui();}}
+function toggleLock(){
+ isLocked=!isLocked;setLockIcon();
+ if(isLocked){wrap.classList.add('locked');lockBtn.classList.add('show');volPopup.classList.remove('show');serverMenu.classList.remove('show');epiDrawer.classList.remove('show');topBar.classList.add('hide');bottom.classList.add('hide');skipControls.classList.remove('show');}
+ else{wrap.classList.remove('locked');lockBtn.classList.remove('show');ui();}
+}
 function toggleVol(){if(isLocked)return;volPopup.classList.toggle('show')}
 volSlider.addEventListener('input',(e)=>{let v=e.target.value;video.volume=v/100;video.muted=false;volValue.innerText=v+'%';})
 function seek(ev){if(!video.duration||isLocked)return;let r=ev.currentTarget.getBoundingClientRect();let p=(ev.clientX-r.left)/r.width;video.currentTime=p*video.duration}
